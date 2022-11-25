@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/bg_indicator.xml" value="0.111" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/card_bground.xml" value="0.111" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/custom_button.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/custom_edittext.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/custom_layout.xml" value="0.111" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/support_nvg.xml" value="0.116" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/add_item.xml" value="0.111" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/back.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_circle.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_graycolor.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_layout2.xml" value="0.1035" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_white.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/custom_nvg.xml" value="0.112" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/ic_baseline_indeterminate_check_box_24.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.111" />
+        <entry key="..\:/FoodApp/app/src/main/res/font/acme.xml" value="0.2111111111111111" />
+        <entry key="..\:/FoodApp/app/src/main/res/font/aladin.xml" value="0.2111111111111111" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_cart.xml" value="0.16666666666666666" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_detail_product.xml" value="0.13333333333333333" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_login.xml" value="0.184375" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_main_home.xml" value="0.13333333333333333" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/item_catogory.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/item_popular.xml" value="0.184375" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/item_selected_food.xml" value="0.22" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/item_viewpaper.xml" value="0.22" />
+        <entry key="..\:/FoodApp/app/src/main/res/menu/bottom_nvg.xml" value="0.184375" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
