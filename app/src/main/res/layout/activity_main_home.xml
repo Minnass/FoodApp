@@ -58,16 +58,27 @@
                 android:src="@drawable/bussiness_man" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/seach_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linear1"
                 android:background="@drawable/custom_edittext"
-                android:drawableStart="@android:drawable/ic_menu_search"
                 android:focusableInTouchMode="true"
                 android:hint="Find your food"
                 android:padding="10dp"
                 android:textSize="20dp"
                 android:textStyle="italic" />
+
+            <ImageView
+                android:id="@+id/searchItem_btn"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_below="@id/linear1"
+                android:layout_alignRight="@id/seach_item"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+
+                android:src="@android:drawable/ic_menu_search" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -84,24 +95,24 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:gravity="center"
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
-                        >
+                        android:gravity="center"
+                        android:orientation="vertical">
 
                         <androidx.viewpager2.widget.ViewPager2
                             android:id="@+id/view_paper2"
                             android:layout_width="match_parent"
                             android:layout_height="100dp" />
+
                         <me.relex.circleindicator.CircleIndicator3
                             android:id="@+id/circle_indicator3"
-                            android:layout_marginTop="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="40dp"
                             android:layout_below="@+id/view_paper2"
                             android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
                             android:translationZ="2dp"
                             app:ci_drawable="@drawable/bg_indicator" />
                     </LinearLayout>
@@ -116,6 +127,7 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rcv_Category"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -140,6 +152,11 @@
                         android:text="For your choice"
                         android:textSize="25sp"
                         android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_yourChoice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 

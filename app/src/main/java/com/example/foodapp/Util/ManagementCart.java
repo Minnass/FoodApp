@@ -2,6 +2,8 @@ package com.example.foodapp.Util;
 
 import android.content.Context;
 import android.content.pm.LauncherApps;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.Model.ItemCartModel;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ManagementCart     {
+
+
     public static void insertFood(List<ItemCartModel> list,FoodModel foodModel)
     {
 
@@ -30,7 +34,7 @@ public class ManagementCart     {
        }
        else
        {
-           list.add(new ItemCartModel(1,foodModel.getName(),foodModel.getId(),foodModel.getPrice()));
+          // list.add(new ItemCartModel(1,foodModel.getName(),foodModel.getId(),foodModel.getPrice()));
        }
     }
     public  static float getTotalFee(List<ItemCartModel>list)
