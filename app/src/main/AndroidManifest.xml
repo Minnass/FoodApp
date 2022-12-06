@@ -21,11 +21,7 @@
         <activity
             android:name=".Activities.FindItemActivity"
             android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Activities.RegisterActivity"
@@ -34,8 +30,10 @@
             android:name=".Activities.LoginActivity"
             android:exported="true"></activity>
         <activity
-            android:name=".Activities.DetailProduct"
-            android:exported="false" />
+            android:name=".Activities.DetailFoodActivity"
+            android:exported="true" >
+
+        </activity>
         <activity
             android:name=".Activities.CartActivity"
             android:exported="false" />
@@ -44,7 +42,11 @@
             android:exported="true"
             android:theme="@style/Theme.Design.Light.NoActionBar"
             android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data

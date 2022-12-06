@@ -8,6 +8,61 @@
     android:background="#DFD7D7"
     tools:context=".Activities.MainHomeActivity">
 
+    <RelativeLayout
+        android:background="#4CAF50"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hi Minnas!"
+                android:textColor="#dd3d00"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/label1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Order &amp; Eat"
+                android:textColor="#f000"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:civ_circle_background_color="#C1B1B1"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/bussiness_man" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/seach_item"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linear1"
+            android:background="@drawable/custom_edittext"
+            android:focusableInTouchMode="true"
+            android:hint="Find your food"
+            android:padding="10dp"
+            android:textSize="20dp"
+            android:textStyle="italic" />
+    </RelativeLayout>
     <LinearLayout
         android:weightSum="2"
         android:layout_width="match_parent"
@@ -15,71 +70,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:paddingLeft="15dp"
-        android:paddingTop="15dp"
         android:paddingRight="15dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/linear1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hi Minnas!"
-                    android:textColor="#dd3d00"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/label1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Order &amp; Eat"
-                    android:textColor="#f000"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/avatar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/bussiness_man" />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/seach_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/linear1"
-                android:background="@drawable/custom_edittext"
-                android:focusableInTouchMode="true"
-                android:hint="Find your food"
-                android:padding="10dp"
-                android:textSize="20dp"
-                android:textStyle="italic" />
-
-            <ImageView
-                android:id="@+id/searchItem_btn"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_below="@id/linear1"
-                android:layout_alignRight="@id/seach_item"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
-
-                android:src="@android:drawable/ic_menu_search" />
-        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -104,7 +95,7 @@
                         <androidx.viewpager2.widget.ViewPager2
                             android:id="@+id/view_paper2"
                             android:layout_width="match_parent"
-                            android:layout_height="100dp" />
+                            android:layout_height="180dp" />
 
                         <me.relex.circleindicator.CircleIndicator3
                             android:id="@+id/circle_indicator3"
@@ -171,16 +162,16 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 android:src="@drawable/shopping_cart"
-                app:backgroundTint="#E38E10" />
+                android:background="#4CAF50" />
         </RelativeLayout>
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:layout_gravity="bottom"
+        android:layout_gravity="bottom"
         app:menu="@menu/bottom_nvg"
-        android:background="#D37414"
+        android:background="#4CAF50"
         android:id="@+id/bottom_nvg"
         >
     </com.google.android.material.bottomnavigation.BottomNavigationView>

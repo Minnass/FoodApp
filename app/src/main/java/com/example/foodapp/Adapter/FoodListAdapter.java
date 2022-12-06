@@ -1,16 +1,21 @@
 package com.example.foodapp.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.foodapp.Activities.DetailFoodActivity;
+import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
 
@@ -19,10 +24,13 @@ import java.util.List;
 public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.FoodViewHolder> {
     private Context context;
     List<FoodModel> mFoodList;
+    IClickFoodItemListener listener;
 
-    public FoodListAdapter(Context context, List<FoodModel> mFoodList) {
+
+    public FoodListAdapter(Context context, List<FoodModel> mFoodList, IClickFoodItemListener listener) {
         this.context = context;
         this.mFoodList = mFoodList;
+        this.listener = listener;
     }
 
     public void setData(List<FoodModel> foodList) {
@@ -54,6 +62,14 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.FoodVi
         holder.quantitySold.setText(String.valueOf(foodModel.getQuantity()));
         float currentPrice = foodModel.getPrice() * (1 - (float)foodModel.getDiscount() / 100);
         holder.currentPrice.setText(String.valueOf(currentPrice));
+        holder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClickHandler(foodModel);
+            }
+        });
+
+
     }
 
     @Override
@@ -67,7 +83,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.FoodVi
     public class FoodViewHolder extends RecyclerView.ViewHolder {
         private ImageView imgFood;
         private TextView foodName, originalPrice, discount_rate, currentPrice,quantitySold;
-
+        private LinearLayout container;
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
             imgFood = itemView.findViewById(R.id.foodImage);
@@ -76,6 +92,8 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.FoodVi
             discount_rate = itemView.findViewById(R.id.discount_text);
             currentPrice = itemView.findViewById(R.id.currentPrice);
             quantitySold= itemView.findViewById(R.id.quantity_sold);
+            container=itemView.findViewById(R.id.containerLayout);
+
         }
     }
 }

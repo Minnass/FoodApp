@@ -31,7 +31,10 @@
             android:text="Xóa hết"
             android:textSize="15dp" />
     </RelativeLayout>
-    <androidx.recyclerview.widget.RecyclerView
+    <GridView
+        android:numColumns="3"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="5dp"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,7 +52,9 @@
             android:text="Thể loại"
             />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <GridView
+            android:verticalSpacing="5dp"
+            android:horizontalSpacing="10dp"
             android:id="@+id/categorySearchingRcv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -1,29 +1,21 @@
 package com.example.foodapp.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.foodapp.Activities.DetailProduct;
-import com.example.foodapp.Activities.MainHomeActivity;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
-import com.example.foodapp.Util.ManagementCart;
 
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularViewHolder> {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ public class DefaultSearchingFragment extends Fragment {
     private FindItemActivity findItemActivity;
     private Context context;
     private TextView oldSearchingDelete;
-    private RecyclerView oldSearchingRcv, categorySearchingRcv;
+    private GridView oldSearchingRcv, categorySearchingRcv;
     private SearchingCategoryAdapter categorySearchingAdapter, oldSearchingAdapter;
     private List<String> oldSearchingReslut;
     private List<String> categorySearching;

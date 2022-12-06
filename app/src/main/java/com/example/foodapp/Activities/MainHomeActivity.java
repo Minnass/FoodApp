@@ -25,6 +25,7 @@ import com.example.foodapp.Adapter.CategoryAdapter;
 import com.example.foodapp.Adapter.FoodListAdapter;
 import com.example.foodapp.Adapter.PhotoViewPager2Adapter;
 import com.example.foodapp.Adapter.PopularAdapter;
+import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.Categories;
 import com.example.foodapp.Model.CategoryModel;
 import com.example.foodapp.Model.FoodModel;
@@ -48,9 +49,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import me.relex.circleindicator.CircleIndicator3;
 
 public class MainHomeActivity extends AppCompatActivity {
-    private ImageView searchingItemBtn;
+
     private EditText searchingItemEdit;
-    private List<FoodModel>searchedItems;
+    private List<FoodModel> searchedItems;
     public static List<ItemCartModel> selectedItemList;
     private BottomNavigationView mBottomNavigationView;
     private FloatingActionButton mFloatingActionButton;
@@ -58,11 +59,11 @@ public class MainHomeActivity extends AppCompatActivity {
     private ViewPager2 mViewpager2;
     private CircleIndicator3 mCircleIndicator3;
     private RecyclerView mRecyleviewCategory;
-    CategoryAdapter categoryAdapter;
+    private CategoryAdapter categoryAdapter;
 
     private RecyclerView mRecyleviewPopular;
     private PopularAdapter mPopularAdapter;
-    private List<FoodModel>mPopularFoodList;
+    private List<FoodModel> mPopularFoodList;
     private RecyclerView mRecycleviewChoice;
     private FoodListAdapter mFoodListAdapter;
     private List<FoodModel> mFoodList;
@@ -72,16 +73,16 @@ public class MainHomeActivity extends AppCompatActivity {
     private Handler mHandler;
     private Runnable mRunnable;
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
-    FoodAppApi mFoodAppApi;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private  FoodAppApi mFoodAppApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         selectedItemList = new ArrayList<>();
-        searchingItemBtn=findViewById(R.id.searchItem_btn);
-        searchingItemEdit=findViewById(R.id.seach_item);
+
+        searchingItemEdit = findViewById(R.id.seach_item);
         setContentView(R.layout.activity_main_home);
         mFoodAppApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
         initImageSlider();
@@ -94,23 +95,6 @@ public class MainHomeActivity extends AppCompatActivity {
 
     }
 
-    void searchItem()
-    {
-        searchingItemBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(searchingItemEdit.getText().equals(""))
-                {
-                    mFoodListAdapter.setData(mFoodList);
-                }
-                else
-                {
-
-                }
-            }
-        });
-
-    }
 
     void initImageSlider() {
         mViewpager2 = findViewById(R.id.view_paper2);
@@ -183,7 +167,7 @@ public class MainHomeActivity extends AppCompatActivity {
     private void initYourchoice() {
 
         mRecycleviewChoice = findViewById(R.id.rcv_yourChoice);
-        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mRecycleviewChoice.setLayoutManager(gridLayoutManager);
         getAllFood();
     }
@@ -224,42 +208,61 @@ public class MainHomeActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                       allFood -> {
-                           if(allFood.size()>0)
-                           {
-                               mFoodList=new ArrayList<>(allFood);
-                               mFoodListAdapter=new FoodListAdapter(this,mFoodList);
-                               mRecycleviewChoice.setAdapter(mFoodListAdapter);
-                           }
-                       },
-                        error->
+                        allFood -> {
+                            if (allFood.size() > 0) {
+                                mFoodList = new ArrayList<>(allFood);
+                                initFoodChoice();
+                            }
+                        },
+                        error ->
                         {
-                            Log.d("Loi",error.getMessage());
+                            Log.d("Loi", error.getMessage());
                         }
                 )
         );
     }
-    void getPopularFood()
+    void initFoodChoice()
     {
+        mFoodListAdapter = new FoodListAdapter(this, mFoodList, new IClickFoodItemListener() {
+            @Override
+            public void onItemClickHandler(FoodModel food) {
+                Intent intent=new Intent(MainHomeActivity.this,DetailFoodActivity.class);
+                Bundle bundle =new Bundle();
+                bundle.putString("foodname",food.getName().toString());
+                bundle.putString("image",food.getImage().toString());
+                bundle.putString("description",food.getDescription());
+                bundle.putString("originalprice",String.valueOf(food.getPrice()));
+                bundle.putInt("sale",food.getDiscount());
+                bundle.putInt("quantitySold",food.getQuantity());
+                float currentPrice = food.getPrice() * (1 - (float)food.getDiscount() / 100);
+                bundle.putString("currentprice",String.valueOf(currentPrice));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        mRecycleviewChoice.setAdapter(mFoodListAdapter);
+    }
+
+    void getPopularFood() {
         compositeDisposable.add(mFoodAppApi.getTopPopularFood()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         allFood -> {
-                            if(allFood.size()>0)
-                            {
-                                mPopularFoodList=new ArrayList<>(allFood);
-                                mPopularAdapter=new PopularAdapter(mPopularFoodList,this);
+                            if (allFood.size() > 0) {
+                                mPopularFoodList = new ArrayList<>(allFood);
+                                mPopularAdapter = new PopularAdapter(mPopularFoodList, this);
                                 mRecyleviewPopular.setAdapter(mPopularAdapter);
                             }
                         },
-                        error->
+                        error ->
                         {
-                            Log.d("Loi",error.getMessage());
+                            Log.d("Loi", error.getMessage());
                         }
                 )
         );
     }
+
     void initFloatingActionBtn() {
         mFloatingActionButton = findViewById(R.id.floatactionbtn_home);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
