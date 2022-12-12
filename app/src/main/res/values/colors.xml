@@ -7,12 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="bg_category1">#fef4e5</color>
-    <color name="bg_category2">#EABE90</color>
-    <color name="bg_category3">#f9e4e4</color>
-    <color name="bg_category4">#B9DBA6</color>
-    <color name="bg_category5">#F8E2A1</color>
-    <color name="bg_category6">#EAA0F6</color>
     <color name="bg_nvg">#EAE6E5</color>
     <color name="backgroundTinted_backup">#88006064</color>
     <color name="gplus_color_2">#f4b400</color>

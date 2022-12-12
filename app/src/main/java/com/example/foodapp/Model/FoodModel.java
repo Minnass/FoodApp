@@ -2,7 +2,9 @@ package com.example.foodapp.Model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class FoodModel {
+import java.io.Serializable;
+
+public class FoodModel implements Serializable {
     @SerializedName("foodname")
     String name;
     @SerializedName("price")
@@ -17,13 +19,17 @@ public class FoodModel {
     @SerializedName("quantitysold")
     int quantity;
 
-    public FoodModel(String name, float price, String image, String description, int discount, int quantity) {
+    @SerializedName("eaterNumber")
+    int eaterNumber;
+
+    public FoodModel(String name, float price, String image, String description, int discount, int quantity, int eaterNumber) {
         this.name = name;
         this.price = price;
         this.image = image;
         this.description = description;
         this.discount = discount;
         this.quantity = quantity;
+        this.eaterNumber = eaterNumber;
     }
 
     public String getName() {
@@ -72,5 +78,13 @@ public class FoodModel {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getEaterNumber() {
+        return eaterNumber;
+    }
+
+    public void setEaterNumber(int eaterNumber) {
+        this.eaterNumber = eaterNumber;
     }
 }

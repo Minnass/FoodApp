@@ -2,6 +2,8 @@ package com.example.foodapp.Retrofit;
 
 import com.example.foodapp.Model.DetailProduct;
 import com.example.foodapp.Model.FoodModel;
+import com.example.foodapp.Model.LoginModel.LoginModel;
+import com.example.foodapp.Model.RegisterModel.RegisterResponse;
 
 
 import java.util.List;
@@ -37,5 +39,26 @@ public interface FoodAppApi {
     @FormUrlEncoded
     public Observable<List<FoodModel>>getRelativeFoods(
             @Field("foodName") String foodName
+    );
+    @POST("getCategory.php")
+    @FormUrlEncoded
+    public  Observable<List<FoodModel>>getCategories(
+            @Field("category") String category
+    );
+
+    //USER REGION
+    @POST("login.php")
+    @FormUrlEncoded
+    public Observable<LoginModel>checkLogin(
+            @Field("userName") String userName,
+            @Field("passWord") String passWord
+    );
+    @POST("registerAccount.php")
+    @FormUrlEncoded
+    public Observable<RegisterResponse> registerAccount(
+            @Field("type") String type,
+            @Field("userName") String userName,
+            @Field("passWord") String passWord,
+            @Field("email") String email
     );
 }

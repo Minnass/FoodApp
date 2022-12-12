@@ -60,7 +60,7 @@
                     android:id="@+id/minus_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/minus" />
+                   />
 
                 <TextView
                     android:id="@+id/item_number"
@@ -75,7 +75,7 @@
                     android:id="@+id/plus_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/plus" />
+                  />
 
             </LinearLayout>
 

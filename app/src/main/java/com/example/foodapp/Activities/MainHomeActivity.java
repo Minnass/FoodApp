@@ -10,23 +10,21 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodapp.Adapter.CategoryAdapter;
 import com.example.foodapp.Adapter.FoodListAdapter;
 import com.example.foodapp.Adapter.PhotoViewPager2Adapter;
 import com.example.foodapp.Adapter.PopularAdapter;
+import com.example.foodapp.Enum.Categories;
+import com.example.foodapp.Iterface.IClickFoodCategoryListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
-import com.example.foodapp.Model.Categories;
 import com.example.foodapp.Model.CategoryModel;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.Model.ItemCartModel;
@@ -34,6 +32,7 @@ import com.example.foodapp.Model.Photo;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
+import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.TranslateAnimationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import me.relex.circleindicator.CircleIndicator3;
@@ -74,12 +72,11 @@ public class MainHomeActivity extends AppCompatActivity {
     private Runnable mRunnable;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private  FoodAppApi mFoodAppApi;
+    private FoodAppApi mFoodAppApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         selectedItemList = new ArrayList<>();
 
         searchingItemEdit = findViewById(R.id.seach_item);
@@ -150,17 +147,22 @@ public class MainHomeActivity extends AppCompatActivity {
 
 
     private void initCategory() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         mRecyleviewCategory = findViewById(R.id.rcv_Category);
-        mRecyleviewCategory.setLayoutManager(linearLayoutManager);
-        mCategoryList = new ArrayList<>();
-        mCategoryList.add(new CategoryModel("Pizza", R.drawable.pizza));
-        mCategoryList.add(new CategoryModel("Burger", R.drawable.hamburger));
-        mCategoryList.add(new CategoryModel("Hotdog", R.drawable.hotdog));
-        mCategoryList.add(new CategoryModel("Drink", R.drawable.soda));
-        mCategoryList.add(new CategoryModel("Cake", R.drawable.cake));
-        mCategoryList.add(new CategoryModel("Fruit", R.drawable.fruit));
-        categoryAdapter = new CategoryAdapter(mCategoryList, this);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
+        mRecyleviewCategory.setLayoutManager(gridLayoutManager);
+        GridSpacingItemDecoration gridSpacingItemDecoration = new GridSpacingItemDecoration(4, 20, false);
+        mRecyleviewCategory.addItemDecoration(gridSpacingItemDecoration);
+
+        categoryAdapter = new CategoryAdapter(this, new IClickFoodCategoryListener() {
+            @Override
+            public void onItemFoodCategoryHandler(Categories category) {
+                Intent intent=new Intent(MainHomeActivity.this,FoodCatetoryActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("category",category);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         mRecyleviewCategory.setAdapter(categoryAdapter);
     }
 
@@ -169,6 +171,8 @@ public class MainHomeActivity extends AppCompatActivity {
         mRecycleviewChoice = findViewById(R.id.rcv_yourChoice);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mRecycleviewChoice.setLayoutManager(gridLayoutManager);
+        GridSpacingItemDecoration itemDecoration = new GridSpacingItemDecoration(2, 40, false);
+        mRecycleviewChoice.addItemDecoration(itemDecoration);
         getAllFood();
     }
 
@@ -221,21 +225,21 @@ public class MainHomeActivity extends AppCompatActivity {
                 )
         );
     }
-    void initFoodChoice()
-    {
+
+    void initFoodChoice() {
         mFoodListAdapter = new FoodListAdapter(this, mFoodList, new IClickFoodItemListener() {
             @Override
             public void onItemClickHandler(FoodModel food) {
-                Intent intent=new Intent(MainHomeActivity.this,DetailFoodActivity.class);
-                Bundle bundle =new Bundle();
-                bundle.putString("foodname",food.getName().toString());
-                bundle.putString("image",food.getImage().toString());
-                bundle.putString("description",food.getDescription());
-                bundle.putString("originalprice",String.valueOf(food.getPrice()));
-                bundle.putInt("sale",food.getDiscount());
-                bundle.putInt("quantitySold",food.getQuantity());
-                float currentPrice = food.getPrice() * (1 - (float)food.getDiscount() / 100);
-                bundle.putString("currentprice",String.valueOf(currentPrice));
+                Intent intent = new Intent(MainHomeActivity.this, DetailFoodActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("foodname", food.getName().toString());
+                bundle.putString("image", food.getImage().toString());
+                bundle.putString("description", food.getDescription());
+                bundle.putString("originalprice", String.valueOf(food.getPrice()));
+                bundle.putInt("sale", food.getDiscount());
+                bundle.putInt("quantitySold", food.getQuantity());
+                float currentPrice = food.getPrice() * (1 - (float) food.getDiscount() / 100);
+                bundle.putString("currentprice", String.valueOf(currentPrice));
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

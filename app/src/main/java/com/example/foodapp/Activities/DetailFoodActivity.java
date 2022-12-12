@@ -19,7 +19,9 @@ import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
+import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.SpacingHorizontalItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +127,7 @@ public class DetailFoodActivity extends AppCompatActivity {
                                 relativeFoods = new ArrayList<>(allFoods);
                                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailFoodActivity.this, RecyclerView.HORIZONTAL, false);
                                 RelativefoodListRCV.setLayoutManager(linearLayoutManager);
+
                                 relativeFoodListAdapter = new FoodListAdapter(DetailFoodActivity.this, relativeFoods, new IClickFoodItemListener() {
                                     @Override
                                     public void onItemClickHandler(FoodModel food) {
@@ -143,6 +146,8 @@ public class DetailFoodActivity extends AppCompatActivity {
                                     }
                                 });
                                 RelativefoodListRCV.setAdapter(relativeFoodListAdapter);
+                                SpacingHorizontalItemDecoration spacingHorizontalItemDecoration=new SpacingHorizontalItemDecoration(30);
+                                RelativefoodListRCV.addItemDecoration(spacingHorizontalItemDecoration);
                             }
                         },
                         error ->

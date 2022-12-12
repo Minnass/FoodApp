@@ -6,27 +6,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodapp.Model.CategoryModel;
+import com.example.foodapp.Enum.Categories;
+import com.example.foodapp.Iterface.IClickFoodCategoryListener;
 import com.example.foodapp.R;
 
 
-import java.util.List;
+import java.util.HashMap;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
-    List<CategoryModel> mCategoriesList;
+
     Context context;
-    public CategoryAdapter(List<CategoryModel> mCategoriesList, Context context) {
-        this.mCategoriesList = mCategoriesList;
+    IClickFoodCategoryListener mLisener;
+
+    HashMap<Categories, Integer> categories;
+
+
+    public CategoryAdapter(Context context, IClickFoodCategoryListener mLisener) {
         this.context = context;
+        this.mLisener = mLisener;
+        categories=new HashMap<>();
+        categories.put(Categories.RICE,R.drawable.rice);
+        categories.put(Categories.NOODLE,R.drawable.noodles);
+        categories.put(Categories.BEVERAGE,R.drawable.drinking);
+        categories.put(Categories.FASTFOOD,R.drawable.fastfood);
+        categories.put(Categories.MEATANDFISH,R.drawable.steak);
+        categories.put(Categories.DESSERT,R.drawable.cupcake);
     }
 
     @NonNull
@@ -39,65 +50,34 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        CategoryModel categoryModel = mCategoriesList.get(position);
-        if ( categoryModel == null) {
-            return;
-        }
-        if(position==0)
-        {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.bg_category1));
-        }
-        else if(position==1)
-        {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.bg_category2));
-        }
-        else if(position==2)
-        {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.bg_category3));
-        }
-        else if(position==3)
-        {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.bg_category4));
-        }
-        else if(position==4)
-        {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.bg_category5));
-        }
-        else if(position==5)
-        {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context,R.color.bg_category6));
-        }
-        holder.textView.setText(categoryModel.getTitle());
-        holder.imageView.setImageResource(categoryModel.getId());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        Categories value = Categories.values()[position];
+        holder.textView.setText(value.toString());
+        holder.imageView.setImageResource(categories.get(value));
+        holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickDeTail();
+                mLisener.onItemFoodCategoryHandler(value);
             }
         });
     }
+
     @Override
     public int getItemCount() {
-        if (mCategoriesList == null) {
-            return 0;
-        } else {
-            return mCategoriesList.size();
-        }
+        return Categories.values().length;
     }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
-        CardView cardView;
+        LinearLayout container;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
+            textView = itemView.findViewById(R.id.categoryName);
             imageView = itemView.findViewById(R.id.img_category);
-            textView = itemView.findViewById(R.id.txt_category);
-            cardView = itemView.findViewById(R.id.cardview_category);
+            container = itemView.findViewById(R.id.container_categoryItem);
         }
     }
-    void onClickDeTail() {
-        Toast.makeText(context, "Duoc roi di thoi", Toast.LENGTH_SHORT).show();
-    }
+
+
 }

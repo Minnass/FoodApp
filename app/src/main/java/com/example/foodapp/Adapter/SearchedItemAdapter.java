@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
 
@@ -19,10 +21,12 @@ import java.util.List;
 public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapter.SearchedItemViewHolder> {
     List<FoodModel> foodList;
     Context context;
+    IClickFoodItemListener mIClickFoodItemListener;
 
-    public SearchedItemAdapter(List<FoodModel> foodList, Context context) {
+    public SearchedItemAdapter(List<FoodModel> foodList, Context context, IClickFoodItemListener mIClickFoodItemListener) {
         this.foodList = foodList;
         this.context = context;
+        this.mIClickFoodItemListener = mIClickFoodItemListener;
     }
 
     public void setData(List<FoodModel> list) {
@@ -42,15 +46,20 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
         if (food == null) {
             return;
         }
-
-        holder.EatingNumber.setText("2 người");
+        Glide.with(context).load(food.getImage()).into(holder.foodImage);
+        holder.EatingNumber.setText(String.valueOf(food.getEaterNumber())+" người");
         holder.foodName.setText(food.getName().toString());
         holder.quantitySold.setText(String.valueOf(food.getQuantity()));
         holder.originalPrice.setText(String.valueOf(food.getPrice()));
         float currentPrice = food.getPrice() * (1 - (float)food.getDiscount() / 100);
         holder.currentPrice.setText(String.valueOf(currentPrice));
         holder.discountRate.setText(String.valueOf(food.getDiscount())+"%");
-        Glide.with(context).load(food.getImage()).into(holder.foodImage);
+        holder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIClickFoodItemListener.onItemClickHandler(food);
+            }
+        });
     }
 
     @Override
@@ -64,7 +73,7 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
     public class SearchedItemViewHolder extends RecyclerView.ViewHolder {
         ImageView foodImage, btnAddItem;
         TextView discountRate, currentPrice, originalPrice, quantitySold, foodName, EatingNumber;
-
+        RelativeLayout container;
         public SearchedItemViewHolder(@NonNull View itemView) {
             super(itemView);
             foodImage = itemView.findViewById(R.id.imageItem_searched);
@@ -75,6 +84,7 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
             quantitySold = itemView.findViewById(R.id.soldQuantity_searchedItem);
             foodName = itemView.findViewById(R.id.foodName_searchedItem);
             EatingNumber = itemView.findViewById(R.id.mealAmount);
+            container=itemView.findViewById(R.id.containerSearchedItem);
         }
     }
 }

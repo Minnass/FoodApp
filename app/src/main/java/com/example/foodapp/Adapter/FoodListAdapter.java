@@ -68,8 +68,6 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.FoodVi
                 listener.onItemClickHandler(foodModel);
             }
         });
-
-
     }
 
     @Override

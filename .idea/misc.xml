@@ -9,9 +9,12 @@
         <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/custom_edittext.xml" value="0.1" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/custom_layout.xml" value="0.111" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/ic_clear_black_24px.xml" value="0.117" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.132" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/profile_nvg.xml" value="0.132" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable-v24/support_nvg.xml" value="0.116" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/add_item.xml" value="0.111" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/back.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_category_item.xml" value="0.132" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_circle.xml" value="0.1" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_graycolor.xml" value="0.1" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_itemseleted.xml" value="0.155" />
@@ -19,24 +22,35 @@
         <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_red.xml" value="0.1" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_search.xml" value="0.1525" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_white.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/bg_white_container.xml" value="0.1235" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/btn_green.xml" value="0.15" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/custom_nvg.xml" value="0.112" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/down_arrow.xml" value="0.1245" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/ic_baseline_arrow_back_ios_new_24.xml" value="0.132" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.132" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/ic_baseline_indeterminate_check_box_24.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/drawable/ic_baseline_work_outline_24.xml" value="0.132" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.111" />
         <entry key="..\:/FoodApp/app/src/main/res/drawable/layout_discount.xml" value="0.1075" />
         <entry key="..\:/FoodApp/app/src/main/res/font/acme.xml" value="0.2111111111111111" />
         <entry key="..\:/FoodApp/app/src/main/res/font/aladin.xml" value="0.2111111111111111" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_cart.xml" value="0.16666666666666666" />
-        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_detail_product.xml" value="0.16666666666666666" />
-        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_find_item.xml" value="0.184375" />
-        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_login.xml" value="0.184375" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_detail_product.xml" value="0.26008344923504867" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_find_item.xml" value="0.22" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_food_catetory.xml" value="0.1703125" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_information_register.xml" value="0.184375" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_main_home.xml" value="0.13333333333333333" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_register.xml" value="0.184375" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_splash_screen.xml" value="0.1" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/default_searching_ui.xml" value="0.18333333333333332" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/dialog_rate_review.xml" value="0.18333333333333332" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/dialog_rating_review.xml" value="0.44" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/filter_dialog.xml" value="0.14666666666666667" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/food_item.xml" value="0.3333333333333333" />
-        <entry key="..\:/FoodApp/app/src/main/res/layout/item_catogory.xml" value="0.1" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/fragment_blank.xml" value="0.10208333333333333" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/fragment_food_category.xml" value="0.22" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/item_catogory.xml" value="0.22" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/item_popular.xml" value="0.22" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/item_selected_food.xml" value="0.22" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/item_viewpaper.xml" value="0.22" />
