@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         mappingID();
         initGoogleAPI();
-        navigateLoginActivity();
+        navigateSignUp();
         HandleLoginButtonClick();
         HandleGoogleSignin();
 
@@ -80,12 +80,13 @@ public class LoginActivity extends AppCompatActivity {
         gmail = findViewById(R.id.gmail);
     }
 
-    void navigateLoginActivity() {
+    void navigateSignUp() {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -177,7 +178,31 @@ public class LoginActivity extends AppCompatActivity {
         task.addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
             @Override
             public void onSuccess(GoogleSignInAccount googleSignInAccount) {
+                compositeDisposable.add(mFoodappApi.registerAccount("google","","",googleSignInAccount.getEmail())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                object -> {
+                                    if (object.isSuccess()) {
+                                        //dang ki tk ms
+                                        Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        //navigate main
+                                        Intent intent=new Intent(LoginActivity.this,MainHomeActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                },
+                                error -> {
+                                    Log.d("Loi", error.getMessage());
+                                }
+                        )
+                );
+                //check Email
 
+                //Info activity
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

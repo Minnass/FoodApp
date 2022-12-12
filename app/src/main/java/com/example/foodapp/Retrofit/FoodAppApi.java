@@ -61,4 +61,11 @@ public interface FoodAppApi {
             @Field("passWord") String passWord,
             @Field("email") String email
     );
+    @POST ("sendPersonalInfo.php")
+    public Observable<Boolean> sendPersonalInfo(
+            @Field("name") String name,
+            @Field("dateOfBirth") String dateOfBirth,
+            @Field("sex") String sex,
+            @Field("address") String address
+    );
 }
