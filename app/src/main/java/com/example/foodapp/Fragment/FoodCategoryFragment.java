@@ -1,6 +1,5 @@
 package com.example.foodapp.Fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.foodapp.Activities.DetailFoodActivity;
-import com.example.foodapp.Activities.MainHomeActivity;
 import com.example.foodapp.Adapter.SearchedItemAdapter;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
@@ -30,8 +27,6 @@ import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Enum.Categories;
 
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -103,11 +98,36 @@ public class FoodCategoryFragment extends Fragment {
         RelativeLayout viewLayout = (RelativeLayout) inflater.inflate(R.layout.fragment_food_category, null);
         mRecycleview = viewLayout.findViewById(R.id.foodCategory);
         totalFood = viewLayout.findViewById(R.id.totalFoodCategoryActivity);
-        initFoodList(foodType);
+        initFoodList();
         return viewLayout;
     }
+    void initFoodList()
+    {
+        searchedItemAdapter = new SearchedItemAdapter(mListFood, context, new IClickFoodItemListener() {
+            @Override
+            public void onItemClickHandler(FoodModel food) {
+                Intent intent=new Intent(context, DetailFoodActivity.class);
+                Bundle bundle =new Bundle();
+                bundle.putString("foodname",food.getName().toString());
+                bundle.putString("image",food.getImage().toString());
+                bundle.putString("description",food.getDescription());
+                bundle.putString("originalprice",String.valueOf(food.getPrice()));
+                bundle.putInt("sale",food.getDiscount());
+                bundle.putInt("quantitySold",food.getQuantity());
+                float currentPrice = food.getPrice() * (1 - (float)food.getDiscount() / 100);
+                bundle.putString("currentprice",String.valueOf(currentPrice));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        mRecycleview.setAdapter(searchedItemAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+        mRecycleview.setLayoutManager(linearLayoutManager);
 
-    void initFoodList(Categories categories) {
+        setData(foodType);
+    }
+
+    void setData(Categories categories) {
         String keyWord;
         switch (categories)
         {
@@ -139,28 +159,8 @@ public class FoodCategoryFragment extends Fragment {
                 .subscribe(
                        allFood-> {
                             if (allFood != null) {
-                                mListFood=new ArrayList<>(allFood);
-                                searchedItemAdapter = new SearchedItemAdapter(mListFood, context, new IClickFoodItemListener() {
-                                    @Override
-                                    public void onItemClickHandler(FoodModel food) {
-                                        Intent intent=new Intent(context, DetailFoodActivity.class);
-                                        Bundle bundle =new Bundle();
-                                        bundle.putString("foodname",food.getName().toString());
-                                        bundle.putString("image",food.getImage().toString());
-                                        bundle.putString("description",food.getDescription());
-                                        bundle.putString("originalprice",String.valueOf(food.getPrice()));
-                                        bundle.putInt("sale",food.getDiscount());
-                                        bundle.putInt("quantitySold",food.getQuantity());
-                                        float currentPrice = food.getPrice() * (1 - (float)food.getDiscount() / 100);
-                                        bundle.putString("currentprice",String.valueOf(currentPrice));
-                                        intent.putExtras(bundle);
-                                        startActivity(intent);
-                                    }
-                                });
-                                mRecycleview.setAdapter(searchedItemAdapter);
-                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
-                                mRecycleview.setLayoutManager(linearLayoutManager);
-                                totalFood.setText(mListFood.size()+"");
+                                searchedItemAdapter.setData(allFood);
+                                totalFood.setText(allFood.size()+"");
                             }
                         },
                         error ->

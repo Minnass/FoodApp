@@ -1,114 +1,140 @@
-package com.example.foodapp.Adapter;//package com.example.foodorder.Adapter;
+package com.example.foodapp.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodapp.Iterface.ChangeItemNumber;
-import com.example.foodapp.Model.ItemCartModel;
+import com.bumptech.glide.Glide;
+import com.example.foodapp.Activities.CartActivity;
+import com.example.foodapp.Iterface.SQliteInterface.SqliteLisener;
+import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
 
 import java.util.List;
 
-public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartListViewHolder>
-{
-    List<ItemCartModel> mItemCartModel;
-    Context context;
-    ChangeItemNumber mChangeItemNumber;
+public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartListViewHolder> {
 
-    public CartListAdapter(List<ItemCartModel> mItemCartModel, Context context,ChangeItemNumber changeItemNumber) {
-        this.mItemCartModel = mItemCartModel;
+    List<ItemCartModel> mfoodList;
+    Context context;
+    SqliteLisener mILisener;
+
+    public CartListAdapter(List<ItemCartModel> mfoodList, Context context, SqliteLisener mILisener) {
+        this.mfoodList = mfoodList;
         this.context = context;
-        this.mChangeItemNumber=changeItemNumber;
+        this.mILisener = mILisener;
     }
+
+    public void setData(List<ItemCartModel> list) {
+        this.mfoodList = list;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public CartListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_selected_food,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_item, parent, false);
         return new CartListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CartListViewHolder holder, int position) {
-            ItemCartModel itemCartModel=mItemCartModel.get(position);
-            if(itemCartModel==null)
-            {
-                return;
+        ItemCartModel itemCartModel = mfoodList.get(position);
+        if (itemCartModel == null) {
+            return;
+        }
+        Glide.with(context).load(itemCartModel.getImage()).into(holder.foodImg);
+        holder.foodName.setText(itemCartModel.getFoodName());
+        if(itemCartModel.getDiscount()==0)
+        {
+            holder.discount.setVisibility(View.GONE);
+            holder.originalPrice.setVisibility(View.GONE);
+        }
+        float currentPrice = itemCartModel.getPrice() * (1 - (float)itemCartModel.getDiscount() / 100);
+        holder.currentPrice.setText(String.valueOf(currentPrice));
+        holder.originalPrice.setText(String.valueOf(itemCartModel.getPrice()));
+        holder.discount.setText(String.valueOf(itemCartModel.getDiscount()));
+        holder.quantity.setText(String.valueOf(itemCartModel.getQuantity()));
+        holder.increase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int current=itemCartModel.getQuantity();
+                int next=current+1;
+                itemCartModel.setQuantity(next);
+                notifyDataSetChanged();
+                ((CartActivity)context).setPrice();
+                holder.quantity.setText(String.valueOf(next));
+               mILisener.updateQuantity(itemCartModel,next);
             }
-            else
-            {
-                holder.imgFood.setImageResource(itemCartModel.getImg_id());
-                holder.tittle.setText(itemCartModel.getNameProduct());
-                 holder.itemNumber.setText(String.valueOf(itemCartModel.getQuantity()));
-                holder.itemPrice.setText(String.valueOf(itemCartModel.getPrice()));
-                holder.totalPrice.setText(String.valueOf(countTotalPrice(itemCartModel)));
+        });
+        if(itemCartModel.isSelected())
+        {
+            holder.selection.setChecked(true);
+        }
+        holder.selection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    itemCartModel.setSelected(true);
+                }
+                else
+                {
+                    itemCartModel.setSelected(false);
+                }
+                notifyDataSetChanged();
             }
-            holder.minus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(holder.itemNumber.getText().equals("1"))
-                    {
-                        mItemCartModel.remove(holder.getAdapterPosition());
-                        holder.minus.setEnabled(false);
-                        notifyDataSetChanged();
-                    }
-                    else
-                    {
-                        int temp =itemCartModel.getQuantity()-1;
-                        itemCartModel.setQuantity(temp);
-                        holder.itemNumber.setText(String.valueOf(temp));
-                        notifyItemChanged(holder.getAdapterPosition());
-                    }
-                    mChangeItemNumber.change();
+        });
+        holder.decrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int current=itemCartModel.getQuantity();
+                if(current==1)
+                {
+                    return;
                 }
-            });
-            holder.plus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    holder.minus.setEnabled(true);
-                    int temp =itemCartModel.getQuantity()+1;
-                    itemCartModel.setQuantity(temp);
-                    holder.itemNumber.setText(String.valueOf(temp));
-                    notifyItemChanged(holder.getAdapterPosition());
-                    mChangeItemNumber.change();
-                }
-            });
+                int previous=current-1;
+                itemCartModel.setQuantity(previous);
+                notifyDataSetChanged();
+                ((CartActivity)context).setPrice();
+                holder.quantity.setText(String.valueOf(previous));
+                mILisener.updateQuantity(itemCartModel,previous);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        if(mItemCartModel ==null)
-        {
-            return 0;
+        if (mfoodList != null) {
+            return mfoodList.size();
         }
-        else {
-            return mItemCartModel.size();
-        }
+        return 0;
     }
-    public class CartListViewHolder extends  RecyclerView.ViewHolder
-    {
-        ImageView imgFood,plus,minus;
-        TextView tittle,itemNumber,itemPrice,totalPrice;
+
+    public class CartListViewHolder extends RecyclerView.ViewHolder {
+        ImageView foodImg;
+        TextView foodName, currentPrice, originalPrice, quantity;
+        ImageView decrease, increase;
+        TextView discount;
+        CheckBox selection;
         public CartListViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgFood=itemView.findViewById(R.id.img_itemSelected);
-            plus=itemView.findViewById(R.id.plus_item);
-            minus=itemView.findViewById(R.id.minus_item);
-            tittle=itemView.findViewById(R.id.title_selectedFood);
-            itemNumber=itemView.findViewById(R.id.item_number);
-            itemPrice=itemView.findViewById(R.id.itemPrice_itemSelected_food);
-            totalPrice=itemView.findViewById(R.id.totalPrice_itemSelected);
+            foodImg = itemView.findViewById(R.id.foodimgCartItem);
+            foodName = itemView.findViewById(R.id.foodNameItemCart);
+            currentPrice = itemView.findViewById(R.id.currentPriceItemCart);
+            originalPrice = itemView.findViewById(R.id.originalPrice_ItemCart);
+            quantity = itemView.findViewById(R.id.quantityItemCart);
+            decrease = itemView.findViewById(R.id.decrease);
+            increase = itemView.findViewById(R.id.increase);
+            discount = itemView.findViewById(R.id.discount_text_ItemCartActivity);
+            selection=itemView.findViewById(R.id.selected_CartIem);
         }
-    }
-    float  countTotalPrice( ItemCartModel itemCartModel)
-    {
-        float result = (float) (Math.round(itemCartModel.getPrice()* itemCartModel.getQuantity() * 100.0) / 100.0);
-        return result;
     }
 }

@@ -1,10 +1,16 @@
 package com.example.foodapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,12 +22,15 @@ import com.bumptech.glide.Glide;
 import com.example.foodapp.Adapter.FoodListAdapter;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
+import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
+import com.example.foodapp.SQLite.CartManagerSqLite;
 import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.SpacingHorizontalItemDecoration;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +51,11 @@ public class DetailFoodActivity extends AppCompatActivity {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private FoodAppApi mFoodAppApi;
+
+    private CartManagerSqLite cartManagerSqLite = new CartManagerSqLite(this);
+    private ItemCartModel itemCartModel;
+    private final String PHONE_NO = "0862877320";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +95,96 @@ public class DetailFoodActivity extends AppCompatActivity {
                 finish();
             }
         });
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(DetailFoodActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(DetailFoodActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
+                }
+                Intent i = new Intent(Intent.ACTION_CALL);
+                i.setData(Uri.parse("tel:" + PHONE_NO));
+                startActivity(i);
+            }
+        });
+        interest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // them vao gio hang
+            }
+        });
+        addTocart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartManagerSqLite.addCart(itemCartModel);
+                //show dialog add to cart
+            }
+        });
+        buyNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClickOpenBottomSheetDialog();
+                //show dialog
+            }
+        });
+    }
+
+    private void ClickOpenBottomSheetDialog() {
+        View view = getLayoutInflater().inflate(R.layout.buynow_bottomsheet_dialog, null);
+
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(view);
+        bottomSheetDialog.show();
+
+        TextView foodName_dialog = view.findViewById(R.id.foodName_buynow);
+        TextView currentPrice_dialog = view.findViewById(R.id.currentPrice_buyNow);
+        TextView originalPrice_dialog = view.findViewById(R.id.originalPrice_buyNow);
+        TextView discount_dialog = view.findViewById(R.id.sale_buyNow);
+        ImageView close_dialog = view.findViewById(R.id.close_buynow);
+        ImageView decrease_dialog = view.findViewById(R.id.decrease_buynow);
+        ImageView increase_dialog = view.findViewById(R.id.increase_buyNow);
+        TextView quantity_dialog = view.findViewById(R.id.quantityItemCart_buyNow);
+        TextView buyNowBtn_dialog = view.findViewById(R.id.btnBuyNow_buyNow);
+        foodName_dialog.setText(itemCartModel.getFoodName());
+        originalPrice_dialog.setText(String.valueOf(itemCartModel.getPrice()));
+        float currentPrice = itemCartModel.getPrice() * (1 - (float)itemCartModel.getDiscount() / 100);
+        currentPrice_dialog.setText(String.valueOf(currentPrice));
+        discount_dialog.setText(String.valueOf(itemCartModel.getDiscount()));
+        quantity_dialog.setText(String.valueOf(itemCartModel.getQuantity()));
+        buyNowBtn_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Chuyen qua thanh toan
+
+            }
+        });
+        decrease_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int current = itemCartModel.getQuantity();
+                if (current == 1) {
+                    return;
+                }
+                int previous = current - 1;
+                quantity_dialog.setText(String.valueOf(previous));
+                itemCartModel.setQuantity(previous);
+            }
+        });
+        increase_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int current = itemCartModel.getQuantity();
+                int next = current + 1;
+                itemCartModel.setQuantity(next);
+                quantity_dialog.setText(String.valueOf(next));
+            }
+        });
+
+        close_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
     }
 
     void intView() {
@@ -92,6 +196,11 @@ public class DetailFoodActivity extends AppCompatActivity {
         quantitySold.setText(String.valueOf(bundle.getInt("quantitySold")));
         sale.setText("Giảm " + String.valueOf(bundle.getInt("sale")) + "%");
         Glide.with(getApplicationContext()).load(bundle.getString("image")).into(foodImg);
+        itemCartModel = new ItemCartModel(
+                bundle.getString("foodname"),
+                1, Integer.parseInt(bundle.getString("originalprice"))
+                , bundle.getInt("sale"), bundle.getString("image")
+        );
     }
 
     void getDetailFood(String foodName) {
@@ -146,7 +255,7 @@ public class DetailFoodActivity extends AppCompatActivity {
                                     }
                                 });
                                 RelativefoodListRCV.setAdapter(relativeFoodListAdapter);
-                                SpacingHorizontalItemDecoration spacingHorizontalItemDecoration=new SpacingHorizontalItemDecoration(30);
+                                SpacingHorizontalItemDecoration spacingHorizontalItemDecoration = new SpacingHorizontalItemDecoration(30);
                                 RelativefoodListRCV.addItemDecoration(spacingHorizontalItemDecoration);
                             }
                         },

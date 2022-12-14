@@ -1,60 +1,122 @@
 package com.example.foodapp.Activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
+import android.content.ClipData;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.foodapp.Adapter.CartListAdapter;
-import com.example.foodapp.Iterface.ChangeItemNumber;
-import com.example.foodapp.Model.ItemCartModel;
+import com.example.foodapp.Iterface.SQliteInterface.SqliteLisener;
+import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
-import com.example.foodapp.Util.ManagementCart;
+import com.example.foodapp.SQLite.CartManagerSqLite;
 
 import java.util.List;
 
-public class CartActivity extends AppCompatActivity implements ChangeItemNumber {
-    private RecyclerView mRecyclerView;
-    TextView itemTotal;
-    TextView deliveryFee;
-    TextView tax;
-    TextView total;
-    TextView emptyText;
-    TextView checkout;
+public class CartActivity extends AppCompatActivity {
     ImageView back;
-    LinearLayout linearLayout;
+    TextView modifier;
+    RecyclerView foodListRCV;
+    LinearLayout noneOfFood, buyBtn;
+    CheckBox checkAllFood;
+    TextView totalPrice, savingPrice, numberOfSelection;
+    LinearLayout paymentState, modifierState;
+
+    CartListAdapter cartListAdapter;
+
+    List<ItemCartModel> foodList;
+
+    CartManagerSqLite cartManagerSqLite = new CartManagerSqLite(this);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
-        initView();
-
-        change();
-        initList();
-        initBackBtn();
+        mappingID();
+        handleBackClick();
+        initRecycleView();
+        handleNoneOfData();
+        setPrice();
+        HanleCheckAllItem();
+        handleModierClick();
     }
 
-    void initView() {
-        back=findViewById(R.id.back_activity_cart);
-        itemTotal = findViewById(R.id.item_total);
-        deliveryFee = findViewById(R.id.delivery_services);
-        tax = findViewById(R.id.tax);
-        total = findViewById(R.id.total);
-        checkout = findViewById(R.id.checkout);
-        emptyText = findViewById(R.id.empty_text);
-        linearLayout = findViewById(R.id.linear2_activityCart);
+    void mappingID() {
+        modifierState = findViewById(R.id.modifyState);
+        paymentState = findViewById(R.id.paymentState);
+        back = findViewById(R.id.backCartActivity);
+        modifier = findViewById(R.id.modify_CartActivity);
+        foodList = findViewById(R.id.allFoof_CartActivity);
+        checkAllFood = findViewById(R.id.totalCheckbox);
+        noneOfFood = findViewById(R.id.noneOfFood);
+        buyBtn = findViewById(R.id.buyItembtn);
+        totalPrice = findViewById(R.id.total_money);
+        savingPrice = findViewById(R.id.saving_money);
+        numberOfSelection = findViewById(R.id.totalFood);
     }
 
-    void initBackBtn()
-    {
+    void HanleCheckAllItem() {
+        checkAllFood.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    for (int i = 0; i < foodList.size(); i++) {
+                        foodList.get(i).setSelected(true);
+                    }
+                } else {
+                    for (int i = 0; i < foodList.size(); i++) {
+                        foodList.get(i).setSelected(false);
+                    }
+                }
+                cartListAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    void handleModierClick() {
+        modifier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (modifier.getText().toString().equals("Sửa")) {
+                    modifier.setText("Xong");
+                    paymentState.setVisibility(View.GONE);
+                    modifierState.setVisibility(View.VISIBLE);
+                } else {
+                    modifier.setText("Sửa");
+                    paymentState.setVisibility(View.VISIBLE);
+                    modifierState.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    public void setPrice() {
+        float _totalPrice = 0;
+        float _savingMoney = 0;
+        if (foodList != null) {
+            for (int position = 0; position < foodList.size(); position++) {
+                ItemCartModel item = foodList.get(position);
+                if (foodList.get(position).getDiscount() != 0) {
+                    _savingMoney += ((float) item.getDiscount() / 100) * item.getPrice();
+                }
+                float currentPrice = item.getPrice() * (1 - (float) item.getDiscount() / 100);
+                _totalPrice += currentPrice;
+            }
+        }
+        totalPrice.setText(String.valueOf(_totalPrice));
+        savingPrice.setText(String.valueOf(_savingMoney));
+    }
+
+    void handleBackClick() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,32 +125,32 @@ public class CartActivity extends AppCompatActivity implements ChangeItemNumber 
         });
     }
 
-    void initList() {
-        mRecyclerView= findViewById(R.id.rcv_cartList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        CartListAdapter mCarlistAdapter= new CartListAdapter(MainHomeActivity.selectedItemList,this,this);
-        mRecyclerView.setAdapter(mCarlistAdapter);
-        if (MainHomeActivity.selectedItemList.isEmpty()) {
-            emptyText.setVisibility(View.VISIBLE);
-            linearLayout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.GONE);
+    void handleNoneOfData() {
+        if (foodList == null || foodList.size() == 0) {
+            noneOfFood.setVisibility(View.VISIBLE);
+            foodListRCV.setVisibility(View.GONE);
         } else {
-            emptyText.setVisibility(View.GONE);
-            linearLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.VISIBLE);
+            foodListRCV.setVisibility(View.VISIBLE);
+            noneOfFood.setVisibility(View.GONE);
         }
     }
 
-    @Override
-    public void change() {
-        float percentTax = 0.02f;
-        float delivery = 10;
-        float  _tax =  Math.round((ManagementCart.getTotalFee(MainHomeActivity.selectedItemList) * percentTax*100.0)/100.0);
-        float _totalPrice =  _tax + delivery + ManagementCart.getTotalFee(MainHomeActivity.selectedItemList);
-        float round = (float) (Math.round(_totalPrice * 100.0) / 100.0);
-        tax.setText(String.valueOf(_tax));
-        deliveryFee.setText(String.valueOf(delivery));
-        total.setText(String.valueOf(round));
+    void initRecycleView() {
+        foodList = cartManagerSqLite.getAllContacts();
+        cartListAdapter = new CartListAdapter(foodList, this, new SqliteLisener() {
+            @Override
+            public void updateQuantity(ItemCartModel item, int newQuantity) {
+                cartManagerSqLite.updateQuantity(item, newQuantity);
+            }
+
+            @Override
+            public void deleteItems(List<ItemCartModel> items) {
+                cartManagerSqLite.deleteSomeItems(items);
+            }
+        });
+
+        foodListRCV.setAdapter(cartListAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        foodListRCV.setLayoutManager(linearLayoutManager);
     }
 }

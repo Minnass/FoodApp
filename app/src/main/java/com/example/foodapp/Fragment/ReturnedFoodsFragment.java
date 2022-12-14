@@ -16,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodapp.Activities.DetailFoodActivity;
 import com.example.foodapp.Activities.FindItemActivity;
-import com.example.foodapp.Activities.MainHomeActivity;
-import com.example.foodapp.Adapter.FoodListAdapter;
 import com.example.foodapp.Adapter.SearchedItemAdapter;
 import com.example.foodapp.Adapter.SearchingCategoryAdapter;
 import com.example.foodapp.Enum.Categories;
@@ -116,6 +113,7 @@ public class ReturnedFoodsFragment extends Fragment {
         returnedFoodListRCV.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
         returnedFoodListRCV.setLayoutManager(linearLayoutManager);
+
     }
 
     void initFilterDialog() {

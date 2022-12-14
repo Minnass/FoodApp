@@ -3,6 +3,7 @@
     android:layout_width="250dp"
     android:layout_gravity="right"
     android:orientation="vertical"
+    android:layout_marginBottom="100dp"
     android:background="#C9C5CD"
     android:layout_height="match_parent">
     <LinearLayout
@@ -10,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RelativeLayout
-
             android:padding="10dp"
             android:background="#f23212"
             android:layout_width="match_parent"
@@ -36,31 +36,29 @@
 
         </RelativeLayout>
         <RelativeLayout
-
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
 
+            <TextView
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:text="Danh mục"
                 android:textSize="14dp"
-                />
+                android:textStyle="bold" />
 
             <TextView
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="Tất cả"
                 android:layout_alignParentRight="true"
-                android:textSize="12dp"/>
+                android:text="Tất cả"
+                android:textSize="12dp"
+                android:textStyle="bold" />
         </RelativeLayout>
         <GridView
+            android:horizontalSpacing="15dp"
             android:listSelector="#BDB7B7"
-            android:gravity="center_horizontal"
             android:numColumns="3"
             android:verticalSpacing="5dp"
             android:layout_margin="10dp"
@@ -69,6 +67,8 @@
             android:id="@+id/category_filter"
             />
         <TextView
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14dp"
@@ -84,7 +84,6 @@
             android:layout_margin="10dp"
             android:id="@+id/typeFilter"/>
     </LinearLayout>
-
     <TextView
         android:layout_margin="20dp"
         android:layout_alignParentBottom="true"
@@ -93,10 +92,10 @@
         android:id="@+id/btnCloseDialog"
         android:text="Áp dụng"
         android:textStyle="bold"
+        android:padding="5dp"
         android:textSize="15dp"
         android:textColor="@color/white"
         android:gravity="center"
         android:background="@drawable/bg_red"
         />
-
 </RelativeLayout>

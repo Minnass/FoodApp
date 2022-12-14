@@ -23,15 +23,16 @@ import com.example.foodapp.Adapter.FoodListAdapter;
 import com.example.foodapp.Adapter.PhotoViewPager2Adapter;
 import com.example.foodapp.Adapter.PopularAdapter;
 import com.example.foodapp.Enum.Categories;
+import com.example.foodapp.Iterface.IClickFavoriteListener;
 import com.example.foodapp.Iterface.IClickFoodCategoryListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.CategoryModel;
 import com.example.foodapp.Model.FoodModel;
-import com.example.foodapp.Model.ItemCartModel;
 import com.example.foodapp.Model.Photo;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
+import com.example.foodapp.SQLite.CartManagerSqLite;
 import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.TranslateAnimationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -50,7 +51,7 @@ public class MainHomeActivity extends AppCompatActivity {
 
     private EditText searchingItemEdit;
     private List<FoodModel> searchedItems;
-    public static List<ItemCartModel> selectedItemList;
+
     private BottomNavigationView mBottomNavigationView;
     private FloatingActionButton mFloatingActionButton;
     private NestedScrollView mNestedScrollView;
@@ -67,17 +68,18 @@ public class MainHomeActivity extends AppCompatActivity {
     private List<FoodModel> mFoodList;
 
     private List<Photo> mPhotoList;
-    private List<CategoryModel> mCategoryList;
+
     private Handler mHandler;
     private Runnable mRunnable;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private FoodAppApi mFoodAppApi;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        selectedItemList = new ArrayList<>();
+
 
         searchingItemEdit = findViewById(R.id.seach_item);
         setContentView(R.layout.activity_main_home);
@@ -137,14 +139,6 @@ public class MainHomeActivity extends AppCompatActivity {
         mHandler.postDelayed(mRunnable, 5000);
     }
 
-    void initPolularFood() {
-        mRecyleviewPopular = findViewById(R.id.rcv_popular);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
-        mRecyleviewPopular.setLayoutManager(linearLayoutManager);
-        getPopularFood();
-
-    }
-
 
     private void initCategory() {
         mRecyleviewCategory = findViewById(R.id.rcv_Category);
@@ -156,9 +150,9 @@ public class MainHomeActivity extends AppCompatActivity {
         categoryAdapter = new CategoryAdapter(this, new IClickFoodCategoryListener() {
             @Override
             public void onItemFoodCategoryHandler(Categories category) {
-                Intent intent=new Intent(MainHomeActivity.this,FoodCatetoryActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putSerializable("category",category);
+                Intent intent = new Intent(MainHomeActivity.this, FoodCatetoryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("category", category);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -173,8 +167,45 @@ public class MainHomeActivity extends AppCompatActivity {
         mRecycleviewChoice.setLayoutManager(gridLayoutManager);
         GridSpacingItemDecoration itemDecoration = new GridSpacingItemDecoration(2, 40, false);
         mRecycleviewChoice.addItemDecoration(itemDecoration);
+        mFoodListAdapter = new FoodListAdapter(this, mFoodList, new IClickFoodItemListener() {
+            @Override
+            public void onItemClickHandler(FoodModel food) {
+                Intent intent = new Intent(MainHomeActivity.this, DetailFoodActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("foodname", food.getName().toString());
+                bundle.putString("image", food.getImage().toString());
+                bundle.putString("description", food.getDescription());
+                bundle.putString("originalprice", String.valueOf(food.getPrice()));
+                bundle.putInt("sale", food.getDiscount());
+                bundle.putInt("quantitySold", food.getQuantity());
+                float currentPrice = food.getPrice() * (1 - (float) food.getDiscount() / 100);
+                bundle.putString("currentprice", String.valueOf(currentPrice));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        mRecycleviewChoice.setAdapter(mFoodListAdapter);
         getAllFood();
     }
+
+    void getAllFood() {
+        compositeDisposable.add(mFoodAppApi.getAllFood()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        allFood -> {
+                            if (allFood.size() > 0) {
+                                mFoodListAdapter.setData(allFood);
+                            }
+                        },
+                        error ->
+                        {
+                            Log.d("Loi", error.getMessage());
+                        }
+                )
+        );
+    }
+
 
     void initBottomNavigaion() {
         mBottomNavigationView = findViewById(R.id.bottom_nvg);
@@ -207,27 +238,12 @@ public class MainHomeActivity extends AppCompatActivity {
 
     }
 
-    void getAllFood() {
-        compositeDisposable.add(mFoodAppApi.getAllFood()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        allFood -> {
-                            if (allFood.size() > 0) {
-                                mFoodList = new ArrayList<>(allFood);
-                                initFoodChoice();
-                            }
-                        },
-                        error ->
-                        {
-                            Log.d("Loi", error.getMessage());
-                        }
-                )
-        );
-    }
 
-    void initFoodChoice() {
-        mFoodListAdapter = new FoodListAdapter(this, mFoodList, new IClickFoodItemListener() {
+    void initPolularFood() {
+        mRecyleviewPopular = findViewById(R.id.rcv_popular);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+        mRecyleviewPopular.setLayoutManager(linearLayoutManager);
+        mPopularAdapter = new PopularAdapter(mPopularFoodList, this, new IClickFoodItemListener() {
             @Override
             public void onItemClickHandler(FoodModel food) {
                 Intent intent = new Intent(MainHomeActivity.this, DetailFoodActivity.class);
@@ -243,8 +259,14 @@ public class MainHomeActivity extends AppCompatActivity {
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
+        }, new IClickFavoriteListener() {
+            @Override
+            public void onItemClickHandler(FoodModel foodModel) {
+                //add vao gio hang yeu thich
+            }
         });
-        mRecycleviewChoice.setAdapter(mFoodListAdapter);
+        mRecyleviewPopular.setAdapter(mPopularAdapter);
+        getPopularFood();
     }
 
     void getPopularFood() {
@@ -254,9 +276,7 @@ public class MainHomeActivity extends AppCompatActivity {
                 .subscribe(
                         allFood -> {
                             if (allFood.size() > 0) {
-                                mPopularFoodList = new ArrayList<>(allFood);
-                                mPopularAdapter = new PopularAdapter(mPopularFoodList, this);
-                                mRecyleviewPopular.setAdapter(mPopularAdapter);
+                                mPopularAdapter.setData(allFood);
                             }
                         },
                         error ->
@@ -272,8 +292,8 @@ public class MainHomeActivity extends AppCompatActivity {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainHomeActivity.this, CartActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(MainHomeActivity.this, CartActivity.class);
+//                startActivity(intent);
             }
         });
     }

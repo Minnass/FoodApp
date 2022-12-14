@@ -31,6 +31,7 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
 
     public void setData(List<FoodModel> list) {
         this.foodList = list;
+        notifyDataSetChanged();
     }
 
     @NonNull

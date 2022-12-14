@@ -80,6 +80,7 @@ public class InformationRegisterActivity extends AppCompatActivity {
                         dateOfbirth.setText(simpleDateFormat.format(calendar.getTime()));
                     }
                 }, year, month, date);
+                datePickerDialog.show();
             }
         });
     }
