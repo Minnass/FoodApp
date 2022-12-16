@@ -8,11 +8,11 @@ import java.util.Date ;
 public class UserModel implements Serializable {
     private String name;
     @SerializedName("dateofbirth")
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private  String sex;
     private  String address;
 
-    public UserModel(String name, Date dateOfBirth, String sex, String address) {
+    public UserModel(String name, String dateOfBirth, String sex, String address) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.sex = sex;
@@ -27,11 +27,11 @@ public class UserModel implements Serializable {
         this.name = name;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

@@ -54,6 +54,10 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
                 mListener.onItemClick(holder.getAdapterPosition());
             }
         });
+        if(position==0)
+        {
+            holder.defaultAddress.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -67,13 +71,14 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
 
     public class AddressViewHolder extends  RecyclerView.ViewHolder{
-        TextView userName,phoneNumber,setting,address;
+        TextView userName,phoneNumber,setting,address,defaultAddress;
         public AddressViewHolder(@NonNull View itemView) {
             super(itemView);
             userName=itemView.findViewById(R.id.userName_itemaddress);
             phoneNumber=itemView.findViewById(R.id.phoneNumber_itemaddress);
             address=itemView.findViewById(R.id.address_addressitem);
             setting=itemView.findViewById(R.id.address_addressitem);
+            defaultAddress=itemView.findViewById(R.id.defaultAddress);
         }
     }
 }

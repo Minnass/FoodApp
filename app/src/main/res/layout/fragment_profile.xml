@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EDEFEF"
+    android:orientation="vertical"
+    tools:context=".Fragment.ProfileFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#4CAF50"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:text="Tài khoản"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.7">
+
+        <ImageView
+            android:id="@+id/edit_profileFragment"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_baseline_edit_24" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar_profileFragement"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/bussiness_man" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/cart_profileFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="#EDEFEF"
+                android:padding="3dp"
+                android:src="@drawable/work" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="6"
+                android:text="Đơn hàng"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_weight="0.5"
+                android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/location_profileFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="#EDEFEF"
+                android:padding="3dp"
+                android:src="@drawable/ic_baseline_location_on_24" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="6"
+                android:text="Địa chỉ"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_weight="0.5"
+                android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cartHistory_profileFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="#EDEFEF"
+                android:padding="3dp"
+                android:src="@drawable/shopping_cart" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="6"
+                android:text="Lịch sử mua hàng"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_weight="0.5"
+                android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/support_profileFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="#EDEFEF"
+                android:padding="3dp"
+                android:src="@drawable/ic_baseline_headset_mic_24" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="6"
+                android:text="Trung tâm hỗ trợ"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_weight="0.5"
+                android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/signOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_textview_black"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Dăng xuất"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+
+</LinearLayout>

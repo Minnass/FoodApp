@@ -78,27 +78,21 @@
 
         <LinearLayout
             android:id="@+id/favorite_ItemPopular"
-            android:padding="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/bg_orange_textview"
-            >
+            android:padding="5dp">
 
             <TextView
-                android:text="Yêu thích"
-                android:textColor="#E30819"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="+ Yêu thích"
+                android:textColor="#E30819"
+                android:textSize="10dp" />
 
-            <ImageView
-                android:layout_marginLeft="5dp"
 
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-
-                android:src="@drawable/favorite" />
         </LinearLayout>
 
 

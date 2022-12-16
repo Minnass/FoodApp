@@ -27,6 +27,7 @@ import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
 import com.example.foodapp.SQLite.CartManagerSqLite;
+import com.example.foodapp.SQLite.FavoriteFoodManagerSqLite;
 import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.SpacingHorizontalItemDecoration;
@@ -51,9 +52,10 @@ public class DetailFoodActivity extends AppCompatActivity {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private FoodAppApi mFoodAppApi;
-
+    private FavoriteFoodManagerSqLite favoriteFoodManagerSqLite = new FavoriteFoodManagerSqLite(this);
     private CartManagerSqLite cartManagerSqLite = new CartManagerSqLite(this);
     private ItemCartModel itemCartModel;
+    private FoodModel selectedFood;
     private final String PHONE_NO = "0862877320";
 
 
@@ -109,6 +111,7 @@ public class DetailFoodActivity extends AppCompatActivity {
         interest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                favoriteFoodManagerSqLite.addFavoriteFood(selectedFood);
                 // them vao gio hang
             }
         });
@@ -146,7 +149,7 @@ public class DetailFoodActivity extends AppCompatActivity {
         TextView buyNowBtn_dialog = view.findViewById(R.id.btnBuyNow_buyNow);
         foodName_dialog.setText(itemCartModel.getFoodName());
         originalPrice_dialog.setText(String.valueOf(itemCartModel.getPrice()));
-        float currentPrice = itemCartModel.getPrice() * (1 - (float)itemCartModel.getDiscount() / 100);
+        float currentPrice = itemCartModel.getPrice() * (1 - (float) itemCartModel.getDiscount() / 100);
         currentPrice_dialog.setText(String.valueOf(currentPrice));
         discount_dialog.setText(String.valueOf(itemCartModel.getDiscount()));
         quantity_dialog.setText(String.valueOf(itemCartModel.getQuantity()));
@@ -198,8 +201,17 @@ public class DetailFoodActivity extends AppCompatActivity {
         Glide.with(getApplicationContext()).load(bundle.getString("image")).into(foodImg);
         itemCartModel = new ItemCartModel(
                 bundle.getString("foodname"),
-                1, Integer.parseInt(bundle.getString("originalprice"))
+                1,(int) Float.parseFloat(bundle.getString("originalprice"))
                 , bundle.getInt("sale"), bundle.getString("image")
+        );
+        selectedFood = new FoodModel(
+                bundle.getString("foodname"),
+                Float.parseFloat(bundle.getString("originalprice")),
+                bundle.getString("image"),
+                bundle.getString("description"),
+                bundle.getInt("sale"),
+                bundle.getInt("quantitySold"),
+                0
         );
     }
 
@@ -215,6 +227,7 @@ public class DetailFoodActivity extends AppCompatActivity {
                                 eaterNumber.setText(String.valueOf(foodDetail.getEaterNumber()) + " người");
                                 preparationTime.setText(foodDetail.getPreparationTime());
                                 preservationTool.setText(foodDetail.getPreservationGuide());
+                                selectedFood.setEaterNumber(foodDetail.getEaterNumber());
                             }
                         },
                         error ->

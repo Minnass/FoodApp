@@ -16,6 +16,7 @@ import com.example.foodapp.Iterface.IClickFavoriteListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 
 import java.util.List;
@@ -56,10 +57,10 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
             holder.originalFee.setVisibility(View.GONE);
         }
         Glide.with(context).load(foodModel.getImage()).into(holder.pic);
-        holder.originalFee.setText(String.valueOf(foodModel.getPrice()));
+        holder.originalFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(foodModel.getPrice()));
         float currentPrice = foodModel.getPrice() * (1 - (float) foodModel.getDiscount() / 100);
-        holder.currentFee.setText(String.valueOf(currentPrice));
-        holder.discount.setText(String.valueOf(foodModel.getDiscount()));
+        holder.currentFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));
+        holder.discount.setText("Giảm "+String.valueOf(foodModel.getDiscount())+"%");
         holder.tittle.setText(foodModel.getName());
         holder.favorite.setOnClickListener(new View.OnClickListener() {
             @Override

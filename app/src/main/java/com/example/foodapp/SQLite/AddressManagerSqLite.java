@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AddressManagerSqLite extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "cartManager";
+    private static final String DATABASE_NAME = "addressManager";
     private static final String TABLE_ADDRESS = "address";
     private static final String KEY_ID = "id";
     private static final String KEY_USERNAME = "userName";

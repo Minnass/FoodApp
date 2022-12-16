@@ -12,9 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.foodapp.Iterface.IClickAddItemListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
     List<FoodModel> foodList;
     Context context;
     IClickFoodItemListener mIClickFoodItemListener;
+    IClickAddItemListener mIClickAddingItemListener;
 
     public SearchedItemAdapter(List<FoodModel> foodList, Context context, IClickFoodItemListener mIClickFoodItemListener) {
         this.foodList = foodList;
@@ -51,9 +54,9 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
         holder.EatingNumber.setText(String.valueOf(food.getEaterNumber())+" người");
         holder.foodName.setText(food.getName().toString());
         holder.quantitySold.setText(String.valueOf(food.getQuantity()));
-        holder.originalPrice.setText(String.valueOf(food.getPrice()));
+        holder.originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(food.getPrice()));
         float currentPrice = food.getPrice() * (1 - (float)food.getDiscount() / 100);
-        holder.currentPrice.setText(String.valueOf(currentPrice));
+        holder.currentPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));
         holder.discountRate.setText(String.valueOf(food.getDiscount())+"%");
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +64,7 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
                 mIClickFoodItemListener.onItemClickHandler(food);
             }
         });
+
     }
 
     @Override

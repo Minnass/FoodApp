@@ -8,13 +8,13 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        android:layout_marginLeft="8dp"
         android:id="@+id/cartview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="3dp">
+        app:cardCornerRadius="5dp">
 
         <ImageView
-            android:paddingLeft="8dp"
             android:id="@+id/imageItem_searched"
             android:layout_width="130dp"
             android:layout_height="90dp"

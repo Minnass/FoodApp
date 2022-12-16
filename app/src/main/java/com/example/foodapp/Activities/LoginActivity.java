@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(LoginActivity.this, "Sai", Toast.LENGTH_SHORT).show();
+                              passWord.setText("");
                             }
                         },
                         error -> {

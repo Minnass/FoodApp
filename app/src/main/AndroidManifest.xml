@@ -20,7 +20,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".EditAddressActivity"
+            android:name=".Activities.PaymentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.EditAddressActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.AddressActivity"
@@ -28,18 +31,21 @@
         <activity
             android:name=".Activities.test"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Activities.InformationRegisterActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.SplashScreenActivity"
-            android:exported="true"></activity>
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".Activities.FoodCatetoryActivity"
             android:exported="true" />

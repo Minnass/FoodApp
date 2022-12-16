@@ -61,6 +61,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/userName_loginActivity"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -76,11 +77,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:hint="Password"
-            app:counterEnabled="true"
-            app:counterMaxLength="31"
-            app:counterTextColor="@color/white"
             app:endIconMode="password_toggle"
-            app:endIconCheckable="true"
+
+            app:endIconCheckable="false"
             app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -89,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:maxLines="1"
-                android:maxLength="31" />
+               />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 

@@ -18,6 +18,7 @@ import com.example.foodapp.Activities.DetailFoodActivity;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 import java.util.List;
 
@@ -58,10 +59,10 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.FoodVi
         Glide.with(context).load(foodModel.getImage()).into(holder.imgFood);
         holder.discount_rate.setText("Giảm "+foodModel.getDiscount() + "%");
         holder.foodName.setText((foodModel.getName()));
-        holder.originalPrice.setText(String.valueOf(foodModel.getPrice()));
+        holder.originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(foodModel.getPrice()));
         holder.quantitySold.setText(String.valueOf(foodModel.getQuantity()));
         float currentPrice = foodModel.getPrice() * (1 - (float)foodModel.getDiscount() / 100);
-        holder.currentPrice.setText(String.valueOf(currentPrice));
+        holder.currentPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

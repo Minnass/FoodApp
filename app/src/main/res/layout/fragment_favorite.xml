@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.FavoriteFragment">
+
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:padding="20dp"
+      android:background="#DEEFEF"
+      android:layout_height="wrap_content">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:gravity="center"
+          android:text="Yêu thích"
+          android:textColor="@color/black"
+          android:textSize="22dp"
+          android:textStyle="bold" />
+
+      <TextView
+          android:id="@+id/deleteAll_favoriteFragment"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:text="Xóa tất cả"
+          android:textColor="#f12122"
+
+          android:textSize="15dp" />
+  </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:id="@+id/foodList_favoriteFragment"
+        android:layout_height="wrap_content"/>
+
+
+
+</LinearLayout>

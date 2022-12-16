@@ -9,14 +9,14 @@
         android:layout_weight="10"
         android:layout_height="wrap_content">
         <ImageView
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="0"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:src="@drawable/location"
             />
         <LinearLayout
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="0.3"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -28,35 +28,44 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/userName_itemaddress"
-                    android:textSize="20dp"
+                    android:textSize="17dp"
                     android:text="Phan Nhật Triều"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     />
                 <TextView
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="15dp"
                     android:text="0862877320"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/phoneNumber_itemaddress"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:textColor="@color/black"
                     />
             </LinearLayout>
             <TextView
                 android:layout_marginTop="12dp"
-                android:textSize="18dp"
+                android:textSize="15dp"
                 android:text="xóm 5, làng triều thủy, xã phú an ,huyện phú vang, tỉnh thừa thiên huế"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/address_addressitem"
                 />
+            <TextView android:visibility="gone"
+                android:id="@+id/defaultAddress"
+                android:padding="7dp"
+                android:textColor="#F44336"
+                android:background="@drawable/bg_orange_textview"
+                android:layout_width="wrap_content"
+                android:text="Địa chỉ mặc định"
+                android:textSize="11dp"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
         <TextView
             android:gravity="center"
-            android:textSize="20dp"
-            android:layout_weight="1"
+            android:textSize="15dp"
+            android:layout_weight="0.6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/addressSetting"

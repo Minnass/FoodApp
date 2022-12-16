@@ -14,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.foodapp.Activities.CartActivity;
-import com.example.foodapp.Iterface.SQliteInterface.SqliteLisener;
+import com.example.foodapp.Iterface.SQliteInterface.ISqliteLisener;
 import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 import java.util.List;
 
@@ -24,9 +25,9 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
 
     List<ItemCartModel> mfoodList;
     Context context;
-    SqliteLisener mILisener;
+    ISqliteLisener mILisener;
 
-    public CartListAdapter(List<ItemCartModel> mfoodList, Context context, SqliteLisener mILisener) {
+    public CartListAdapter(List<ItemCartModel> mfoodList, Context context, ISqliteLisener mILisener) {
         this.mfoodList = mfoodList;
         this.context = context;
         this.mILisener = mILisener;
@@ -58,9 +59,9 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
             holder.originalPrice.setVisibility(View.GONE);
         }
         float currentPrice = itemCartModel.getPrice() * (1 - (float)itemCartModel.getDiscount() / 100);
-        holder.currentPrice.setText(String.valueOf(currentPrice));
-        holder.originalPrice.setText(String.valueOf(itemCartModel.getPrice()));
-        holder.discount.setText(String.valueOf(itemCartModel.getDiscount()));
+        holder.currentPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));
+        holder.originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(itemCartModel.getPrice()));
+        holder.discount.setText("Giảm "+String.valueOf(itemCartModel.getDiscount())+"%");
         holder.quantity.setText(String.valueOf(itemCartModel.getQuantity()));
         holder.increase.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,8 +69,6 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
                 int current=itemCartModel.getQuantity();
                 int next=current+1;
                 itemCartModel.setQuantity(next);
-                notifyDataSetChanged();
-                ((CartActivity)context).setPrice();
                 holder.quantity.setText(String.valueOf(next));
                mILisener.updateQuantity(itemCartModel,next);
             }
@@ -77,6 +76,10 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
         if(itemCartModel.isSelected())
         {
             holder.selection.setChecked(true);
+        }
+        else
+        {
+            holder.selection.setChecked(false);
         }
         holder.selection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -89,7 +92,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
                 {
                     itemCartModel.setSelected(false);
                 }
-                notifyDataSetChanged();
+
             }
         });
         holder.decrease.setOnClickListener(new View.OnClickListener() {
@@ -102,8 +105,6 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
                 }
                 int previous=current-1;
                 itemCartModel.setQuantity(previous);
-                notifyDataSetChanged();
-                ((CartActivity)context).setPrice();
                 holder.quantity.setText(String.valueOf(previous));
                 mILisener.updateQuantity(itemCartModel,previous);
             }
