@@ -15,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.foodapp.Adapter.AddressAdapter;
-import com.example.foodapp.Iterface.Address.IClickAddressSettingListener;
+import com.example.foodapp.Iterface.Address.IClickAddressListener;
+
 import com.example.foodapp.Model.SQLiteModel.AddressModel;
 import com.example.foodapp.R;
 import com.example.foodapp.SQLite.AddressManagerSqLite;
@@ -23,6 +24,7 @@ import com.example.foodapp.SQLite.AddressManagerSqLite;
 import java.util.List;
 
 public class AddressActivity extends AppCompatActivity {
+    private  final int REQUEST_CODE=999;
     ImageView back;
     TextView add;
     RecyclerView addListRCV;
@@ -38,6 +40,7 @@ public class AddressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_address);
         mappingID();
         initAddressRCV();
+
         handleClick();
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
                 , new ActivityResultCallback<ActivityResult>() {
@@ -107,10 +110,19 @@ public class AddressActivity extends AppCompatActivity {
 
     void initAddressRCV() {
         addressList = addressManagerSqLite.getAllContacts();
-        addressAdapter = new AddressAdapter(addressList, this, new IClickAddressSettingListener() {
+        addressAdapter = new AddressAdapter(addressList, this, new IClickAddressListener() {
             @Override
-            public void onItemClick(int index) {
+            public void onSettingItemClick(int index) {
                 HandleAddressSettingClick(index);
+            }
+
+            @Override
+            public void onChosingItemClick(int index) {
+                AddressModel temp=addressList.get(index);
+                addressList.set(index,addressList.get(0));
+                addressList.set(0,temp);
+                addressAdapter.notifyDataSetChanged();
+                sendBackAddressChosen(addressList.get(0));
             }
         });
         addListRCV.setAdapter(addressAdapter);
@@ -129,5 +141,14 @@ public class AddressActivity extends AppCompatActivity {
         bundle.putInt("index", index);
         intent.putExtras(bundle);
         activityResultLauncher.launch(intent);
+    }
+    public void sendBackAddressChosen(AddressModel chosenAddress)
+    {
+        Intent intent = new Intent();
+        intent.putExtra("name", chosenAddress.getName());
+        intent.putExtra("phone", chosenAddress.getPhone());
+        intent.putExtra("address", chosenAddress.getAddress());
+        setResult(REQUEST_CODE, intent);
+        super.onBackPressed();
     }
 }

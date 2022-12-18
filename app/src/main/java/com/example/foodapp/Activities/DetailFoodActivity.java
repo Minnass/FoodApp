@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import com.example.foodapp.SQLite.CartManagerSqLite;
 import com.example.foodapp.SQLite.FavoriteFoodManagerSqLite;
 import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.NotificationDialog;
 import com.example.foodapp.Util.SpacingHorizontalItemDecoration;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -113,6 +115,12 @@ public class DetailFoodActivity extends AppCompatActivity {
             public void onClick(View v) {
                 favoriteFoodManagerSqLite.addFavoriteFood(selectedFood);
                 // them vao gio hang
+                NotificationDialog notificationDialog = new NotificationDialog(DetailFoodActivity.this);
+                notificationDialog.setContent("Đã thêm vào giỏ hàng");
+                notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                notificationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                notificationDialog.show();
+
             }
         });
         addTocart.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +145,7 @@ public class DetailFoodActivity extends AppCompatActivity {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(view);
         bottomSheetDialog.show();
-
+        ImageView foodImage=view.findViewById(R.id.foodImage_buynow);
         TextView foodName_dialog = view.findViewById(R.id.foodName_buynow);
         TextView currentPrice_dialog = view.findViewById(R.id.currentPrice_buyNow);
         TextView originalPrice_dialog = view.findViewById(R.id.originalPrice_buyNow);
@@ -147,6 +155,7 @@ public class DetailFoodActivity extends AppCompatActivity {
         ImageView increase_dialog = view.findViewById(R.id.increase_buyNow);
         TextView quantity_dialog = view.findViewById(R.id.quantityItemCart_buyNow);
         TextView buyNowBtn_dialog = view.findViewById(R.id.btnBuyNow_buyNow);
+        Glide.with(this).load(itemCartModel.getImage()).into(foodImage);
         foodName_dialog.setText(itemCartModel.getFoodName());
         originalPrice_dialog.setText(String.valueOf(itemCartModel.getPrice()));
         float currentPrice = itemCartModel.getPrice() * (1 - (float) itemCartModel.getDiscount() / 100);
@@ -201,7 +210,7 @@ public class DetailFoodActivity extends AppCompatActivity {
         Glide.with(getApplicationContext()).load(bundle.getString("image")).into(foodImg);
         itemCartModel = new ItemCartModel(
                 bundle.getString("foodname"),
-                1,(int) Float.parseFloat(bundle.getString("originalprice"))
+                1, (int) Float.parseFloat(bundle.getString("originalprice"))
                 , bundle.getInt("sale"), bundle.getString("image")
         );
         selectedFood = new FoodModel(

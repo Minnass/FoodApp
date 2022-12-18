@@ -35,6 +35,7 @@ import com.example.foodapp.Iterface.IClickFoodCategoryListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.CategoryModel;
 import com.example.foodapp.Model.FoodModel;
+import com.example.foodapp.Model.LoginModel.UserModel;
 import com.example.foodapp.Model.Photo;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
@@ -56,7 +57,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import me.relex.circleindicator.CircleIndicator3;
 
 public class MainHomeActivity extends AppCompatActivity {
-
+    public static UserModel user;
     private FragmentTransaction ft;
     private HomeFragment homeFragment;
     private FavoriteFragment favoriteFragment;

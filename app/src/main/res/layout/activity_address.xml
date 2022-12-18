@@ -6,38 +6,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activities.AddressActivity">
-<RelativeLayout
 
-    android:layout_width="match_parent"
-    android:layout_height="60dp">
+    <RelativeLayout
 
-    <ImageView
-        android:id="@+id/backAddressActivity"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
-        android:src="@drawable/back" />
-    <TextView
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        android:text="Chọn địa chỉ giao hàng"
-        android:layout_height="wrap_content"/>
-    <View
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#BDB7B7"/>
-</RelativeLayout>
+        android:layout_height="60dp">
+
+        <ImageView
+            android:id="@+id/backAddressActivity"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Chọn địa chỉ giao hàng"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#BDB7B7" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/addAdress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:background="@drawable/bg_blue_textview"
         android:gravity="center"
         android:padding="20dp"
@@ -46,7 +51,7 @@
         android:textSize="15dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
         android:id="@+id/addressRCV"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#EDEFEF"
+    android:layout_height="match_parent"
+    tools:context=".Activities.ContactInformationActivity">
+  <RelativeLayout
+      android:paddingLeft="15dp"
+      android:paddingTop="25dp"
+      android:paddingBottom="25dp"
+      android:background="#4CAF50"
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent">
+      <TextView
+          android:text="Liên hệ"
+          android:textSize="20dp"
+          android:layout_centerInParent="true"
+          android:textColor="@color/white"
+          android:textStyle="bold"
+          android:gravity="center"
+
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+     />
+
+      <ImageView
+          android:id="@+id/back_contactInfoActivity"
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:layout_centerVertical="true"
+          android:src="@drawable/ic_baseline_arrow_back_ios_new_24" />
+
+  </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="150dp"
+            android:layout_margin="20dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/anh01" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textColor="#f12121"
+            android:textSize="25dp"
+            android:text="FiveT FoodStore"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:text="Highly committed to quality products and excellent services."
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/facebook_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="#EDEFEF"
+            android:src="@drawable/facebook" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="6"
+            android:text="Liên hệ qua facebook"
+            android:textColor="@color/black"
+            android:textSize="15dp" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="15dp"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:id="@+id/instagram_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="#EDEFEF"
+            android:src="@drawable/instagram" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="6"
+            android:text="Liên hệ qua Instagram"
+            android:textColor="@color/black"
+            android:textSize="15dp" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="15dp"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:id="@+id/youtube_channel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="#EDEFEF"
+            android:src="@drawable/youtube" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="6"
+            android:text="Youtube Channel"
+            android:textColor="@color/black"
+            android:textSize="15dp" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="15dp"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+    </LinearLayout>
+
+</LinearLayout>

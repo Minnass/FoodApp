@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -27,6 +29,7 @@ import com.example.foodapp.SQLite.FavoriteFoodManagerSqLite;
 import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -35,7 +38,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class CartActivity extends AppCompatActivity {
     ImageView back;
-    TextView modifier,  deleteChoice;
+    TextView modifier, deleteChoice;
     RecyclerView foodListRCV;
     LinearLayout noneOfFood, buyBtn;
     CheckBox checkAllFood;
@@ -46,7 +49,7 @@ public class CartActivity extends AppCompatActivity {
 
     List<ItemCartModel> foodList;
 
-    private FoodAppApi mFoodAppApi= RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
+    private FoodAppApi mFoodAppApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     FavoriteFoodManagerSqLite favoriteFoodManagerSqLite = new FavoriteFoodManagerSqLite(this);
@@ -59,10 +62,10 @@ public class CartActivity extends AppCompatActivity {
         mappingID();
         handleBackClick();
         initRecycleView();
-
         setPrice();
         HanleCheckAllItem();
         handleModierClick();
+        HandleBuyButton();
     }
 
     void mappingID() {
@@ -78,6 +81,7 @@ public class CartActivity extends AppCompatActivity {
         savingPrice = findViewById(R.id.saving_money);
         numberOfSelection = findViewById(R.id.totalFood);
         deleteChoice = findViewById(R.id.delete);
+
 
     }
 
@@ -115,25 +119,25 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
-    deleteChoice.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int counter = 0;
-            for (int i=0;i<foodList.size();i++) {
-                if (foodList.get(i).isSelected()) {
-                    cartManagerSqLite.deleteItem(foodList.get(i));
-                    foodList.remove(foodList.get(i));
-                    i--;
-                    counter++;
+        deleteChoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int counter = 0;
+                for (int i = 0; i < foodList.size(); i++) {
+                    if (foodList.get(i).isSelected()) {
+                        cartManagerSqLite.deleteItem(foodList.get(i));
+                        foodList.remove(foodList.get(i));
+                        i--;
+                        counter++;
+                    }
+                }
+                cartListAdapter.notifyDataSetChanged();
+                if (counter > 0) {
+                    setPrice();
+                    Toast.makeText(CartActivity.this, "" + counter, Toast.LENGTH_SHORT).show();
                 }
             }
-            cartListAdapter.notifyDataSetChanged();
-            if (counter > 0) {
-                setPrice();
-                Toast.makeText(CartActivity.this, ""+counter, Toast.LENGTH_SHORT).show();
-            }
-        }
-    });
+        });
     }
 
     public void setPrice() {
@@ -143,13 +147,13 @@ public class CartActivity extends AppCompatActivity {
             for (int position = 0; position < foodList.size(); position++) {
                 ItemCartModel item = foodList.get(position);
                 if (foodList.get(position).getDiscount() != 0) {
-                    _savingMoney += (((float) item.getDiscount() / 100) * item.getPrice())*item.getQuantity();
+                    _savingMoney += (((float) item.getDiscount() / 100) * item.getPrice()) * item.getQuantity();
                 }
                 float currentPrice = item.getPrice() * (1 - (float) item.getDiscount() / 100);
-                _totalPrice += currentPrice*item.getQuantity();
+                _totalPrice += currentPrice * item.getQuantity();
             }
         }
-        totalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency( _totalPrice));
+        totalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_totalPrice));
         savingPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_savingMoney));
     }
 
@@ -195,5 +199,23 @@ public class CartActivity extends AppCompatActivity {
             foodListRCV.setVisibility(View.VISIBLE);
             noneOfFood.setVisibility(View.GONE);
         }
+    }
+
+    void HandleBuyButton() {
+        //Neu Chua co don hang Toast len ban chua chon san pham
+
+        ArrayList<ItemCartModel> temp = new ArrayList<>();
+        int counter = 0;
+        for (int i = 0; i < foodList.size(); i++) {
+            if (foodList.get(i).isSelected()) {
+                temp.add(foodList.get(i));
+            }
+        }
+        if (counter > 0) {
+            Intent intent = new Intent(CartActivity.this, PaymentActivity.class);
+            intent.putParcelableArrayListExtra("foodListChosend", temp);
+            startActivity(intent);
+        }
+
     }
 }

@@ -11,12 +11,22 @@ public class UserModel implements Serializable {
     private String dateOfBirth;
     private  String sex;
     private  String address;
+    private  String email;
 
-    public UserModel(String name, String dateOfBirth, String sex, String address) {
+    public UserModel(String name, String dateOfBirth, String sex, String address, String email) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.sex = sex;
         this.address = address;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {

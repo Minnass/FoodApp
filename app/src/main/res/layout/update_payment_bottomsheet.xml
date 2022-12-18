@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#F1EDEDF1"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:padding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Cập nhật món"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:id="@+id/close_updateSheet"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/close" />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#B3ACAC"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/totalPrice_updateItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/fooImg_updateSheet"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/fooImg_updateSheet"
+            android:text="10,000 vnd"
+            android:textColor="@color/black"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/fooImg_updateSheet"
+            android:layout_width="100dp"
+            android:layout_height="90dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/anh01" />
+
+        <TextView
+            android:id="@+id/foodName_updateSheet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/fooImg_updateSheet"
+            android:text="Hồng Trà sữa chân trâu"
+            android:textColor="@color/black"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fooImg_updateSheet"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/decrease_updateSheet"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="#D6E2EC"
+                android:src="@drawable/ic_baseline_remove_24" />
+
+            <TextView
+                android:id="@+id/quantityItemCart_updateSheet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="0"
+
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <ImageView
+                android:id="@+id/increase_updateSheet"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="#D6E2EC"
+                android:src="@drawable/ic_baseline_add_24" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#B3ACAC"
+        />
+    <View
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#B3ACAC"
+        />
+    <LinearLayout
+        android:padding="10dp"
+        android:background="#FFFFFF"
+        android:layout_width="match_parent"
+        android:id="@+id/notion_container_sheet"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_marginLeft="15dp"
+            android:layout_width="20dp"
+            android:src="@drawable/ic_baseline_event_note_24"
+            android:layout_height="20dp"/>
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:text="Ghi chú cho quán"
+            android:textStyle="italic"
+            android:textSize="12dp"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:id="@+id/notion_sheet"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#B3ACAC"
+        />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:padding="10dp"
+        android:gravity="center"
+        android:text="Cập Nhật"
+        android:background="@drawable/btn_green"
+      android:layout_width="match_parent"
+        android:id="@+id/updateBtn_updateSheet"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

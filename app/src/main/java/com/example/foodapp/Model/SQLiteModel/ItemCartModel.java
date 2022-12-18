@@ -1,6 +1,11 @@
 package com.example.foodapp.Model.SQLiteModel;
 
-public class ItemCartModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class ItemCartModel implements Parcelable {
     String foodName;
     int quantity;
     int Price;
@@ -8,6 +13,53 @@ public class ItemCartModel {
     String image;
     boolean selected;
 
+    protected ItemCartModel(Parcel in) {
+        foodName = in.readString();
+        quantity = in.readInt();
+        Price = in.readInt();
+        discount = in.readInt();
+        image = in.readString();
+        selected = in.readByte() != 0;
+    }
+
+    public static final Creator<ItemCartModel> CREATOR = new Creator<ItemCartModel>() {
+        @Override
+        public ItemCartModel createFromParcel(Parcel in) {
+            return new ItemCartModel(in);
+        }
+
+        @Override
+        public ItemCartModel[] newArray(int size) {
+            return new ItemCartModel[size];
+        }
+    };
+
+
+
+    public ItemCartModel(String foodName, int quantity, int price, int discount, String image) {
+        super();
+        this.foodName = foodName;
+        this.quantity = quantity;
+        this.Price = price;
+        this.discount = discount;
+        this.image = image;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(foodName);
+        dest.writeInt(quantity);
+        dest.writeInt(Price);
+        dest.writeInt(discount);
+        dest.writeString(image);
+        dest.writeByte((byte) (selected ? 1 : 0));
+    }
     public int getDiscount() {
         return discount;
     }
@@ -30,14 +82,6 @@ public class ItemCartModel {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-    }
-
-    public ItemCartModel(String foodName, int quantity, int price, int discount, String image) {
-        this.foodName = foodName;
-        this.quantity = quantity;
-        Price = price;
-        this.discount = discount;
-        this.image = image;
     }
 
     public String getFoodName() {

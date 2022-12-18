@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:background="#EEF2F3"
+        android:padding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/cancle_notionSheet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hủy"
+            android:textColor="@color/black"
+            android:textSize="14dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="Thêm ghi chú"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:id="@+id/done_notionSheet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Xong"
+            android:textColor="#f12121"
+            android:textSize="14dp" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E3E1E1"
+        />
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <EditText
+        android:id="@+id/notion_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:maxLength="100" />
+    <TextView
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:padding="15dp"
+        android:id="@+id/textCounter"
+        android:textSize="18dp"
+        android:text="0/100"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
+
+</LinearLayout>

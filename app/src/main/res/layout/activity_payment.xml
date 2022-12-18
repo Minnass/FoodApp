@@ -137,7 +137,7 @@
                     android:paddingTop="20dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="20dp"
-                    android:visibility="gone">
+                   >
 
                     <ImageView
                         android:layout_width="45dp"
@@ -146,6 +146,7 @@
                         android:src="@drawable/location" />
 
                     <LinearLayout
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -242,11 +243,13 @@
 
                     <TextView
                         android:id="@+id/deliveryTime"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="14:20-23/12/2022"
-                        android:textColor="@color/black" />
+                        android:text="Chọn thời gian"
+
+                        android:textColor="#2196F3" />
 
                     <LinearLayout
 
@@ -490,6 +493,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:layout_marginBottom="55dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp">

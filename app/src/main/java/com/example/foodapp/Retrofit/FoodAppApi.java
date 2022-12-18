@@ -1,7 +1,9 @@
 package com.example.foodapp.Retrofit;
 
+import com.example.foodapp.Model.DeliveryModel;
 import com.example.foodapp.Model.DetailProduct;
 import com.example.foodapp.Model.FoodModel;
+import com.example.foodapp.Model.GivenSaleCodeModel;
 import com.example.foodapp.Model.LoginModel.LoginModel;
 import com.example.foodapp.Model.RegisterModel.RegisterResponse;
 
@@ -11,12 +13,16 @@ import java.util.List;
 import io.reactivex.rxjava3.core.Observable;
 
 
+import kotlin.jvm.JvmMultifileClass;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface FoodAppApi {
+    @GET("getAllDeliveryType.php")
+    public Observable<List<DeliveryModel>> getAllDeliveryType();
+
     @GET("getfood.php")
     public Observable<List<FoodModel>> getAllFood();
 
@@ -67,5 +73,13 @@ public interface FoodAppApi {
             @Field("dateOfBirth") String dateOfBirth,
             @Field("sex") String sex,
             @Field("address") String address
+    );
+    @POST ("checkSaleCode.php")
+    public Observable<GivenSaleCodeModel> checkValidSaleCode(
+            @Field("code") String code
+    );
+    @POST ("getLoginType.php")
+    public Observable<String> getLoginType(
+            @Field("email") String email
     );
 }

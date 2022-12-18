@@ -15,7 +15,10 @@ import android.widget.TextView;
 
 import com.example.foodapp.Activities.AddressActivity;
 import com.example.foodapp.Activities.CartActivity;
+import com.example.foodapp.Activities.ContactInformationActivity;
+import com.example.foodapp.Activities.EditProfileActivity;
 import com.example.foodapp.Activities.MainHomeActivity;
+import com.example.foodapp.Activities.SplashScreenActivity;
 import com.example.foodapp.R;
 
 /**
@@ -79,26 +82,29 @@ public class ProfileFragment extends Fragment {
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Thoat Ung dung
+                Intent intent = new Intent(context, SplashScreenActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Will clear out your activity history stack till now
+                startActivity(intent);
             }
         });
         profileEditer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Chuyen sang activity Edit
+                Intent intent = new Intent(context, EditProfileActivity.class);
+                startActivity(intent);
             }
         });
         yourCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context, CartActivity.class);
+                Intent intent = new Intent(context, CartActivity.class);
                 startActivity(intent);
             }
         });
         yourAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context, AddressActivity.class);
+                Intent intent = new Intent(context, AddressActivity.class);
                 startActivity(intent);
             }
         });
@@ -111,7 +117,8 @@ public class ProfileFragment extends Fragment {
         supportCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Chuyen sang suppou
+                Intent intent = new Intent(context, ContactInformationActivity.class);
+                startActivity(intent);
             }
         });
     }

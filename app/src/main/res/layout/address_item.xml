@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:id="@+id/addressItem_container"
     android:layout_width="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,8 +54,12 @@
                 android:id="@+id/address_addressitem"
                 />
             <TextView android:visibility="gone"
+                android:layout_marginTop="5dp"
                 android:id="@+id/defaultAddress"
-                android:padding="7dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
                 android:textColor="#F44336"
                 android:background="@drawable/bg_orange_textview"
                 android:layout_width="wrap_content"
