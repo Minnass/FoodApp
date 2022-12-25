@@ -57,7 +57,7 @@
             app:endIconMode="clear_text"
             app:counterTextColor="@color/white"
             app:helperTextTextColor="#F48E8E"
-            app:startIconDrawable="@drawable/profile_nvg">
+            app:startIconDrawable="@drawable/ic_baseline_person_243">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/userName_loginActivity"

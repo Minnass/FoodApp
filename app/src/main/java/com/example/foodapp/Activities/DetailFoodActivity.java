@@ -1,5 +1,8 @@
 package com.example.foodapp.Activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -7,12 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,7 +40,9 @@ import com.example.foodapp.SQLite.FavoriteFoodManagerSqLite;
 import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.NotificationDialog;
+import com.example.foodapp.Util.PermissionAlertDialog;
 import com.example.foodapp.Util.SpacingHorizontalItemDecoration;
+import com.example.foodapp.Util.VietNameseCurrencyFormat;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
@@ -59,6 +69,7 @@ public class DetailFoodActivity extends AppCompatActivity {
     private ItemCartModel itemCartModel;
     private FoodModel selectedFood;
     private final String PHONE_NO = "0862877320";
+    private final int PERMISSION_PHONECALL = 1;
 
 
     @Override
@@ -100,14 +111,19 @@ public class DetailFoodActivity extends AppCompatActivity {
             }
         });
         call.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(DetailFoodActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(DetailFoodActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 100);
+                if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, PERMISSION_PHONECALL);
+                    }
+
+                } else {
+                    Intent i = new Intent(Intent.ACTION_CALL);
+                    i.setData(Uri.parse("tel:" + PHONE_NO));
+                    startActivity(i);
                 }
-                Intent i = new Intent(Intent.ACTION_CALL);
-                i.setData(Uri.parse("tel:" + PHONE_NO));
-                startActivity(i);
             }
         });
         interest.setOnClickListener(new View.OnClickListener() {
@@ -116,9 +132,8 @@ public class DetailFoodActivity extends AppCompatActivity {
                 favoriteFoodManagerSqLite.addFavoriteFood(selectedFood);
                 // them vao gio hang
                 NotificationDialog notificationDialog = new NotificationDialog(DetailFoodActivity.this);
-                notificationDialog.setContent("Đã thêm vào giỏ hàng");
+                notificationDialog.setContent("Đã thêm vào mục yêu thích");
                 notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
-                notificationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 notificationDialog.show();
 
             }
@@ -127,25 +142,26 @@ public class DetailFoodActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 cartManagerSqLite.addCart(itemCartModel);
-                //show dialog add to cart
+                NotificationDialog notificationDialog = new NotificationDialog(DetailFoodActivity.this);
+                notificationDialog.setContent("Thêm vào giỏ hàng thành công");
+                notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                notificationDialog.show();
             }
         });
         buyNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClickOpenBottomSheetDialog();
-                //show dialog
             }
         });
     }
 
     private void ClickOpenBottomSheetDialog() {
         View view = getLayoutInflater().inflate(R.layout.buynow_bottomsheet_dialog, null);
-
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(view);
         bottomSheetDialog.show();
-        ImageView foodImage=view.findViewById(R.id.foodImage_buynow);
+        ImageView foodImage = view.findViewById(R.id.foodImage_buynow);
         TextView foodName_dialog = view.findViewById(R.id.foodName_buynow);
         TextView currentPrice_dialog = view.findViewById(R.id.currentPrice_buyNow);
         TextView originalPrice_dialog = view.findViewById(R.id.originalPrice_buyNow);
@@ -157,16 +173,19 @@ public class DetailFoodActivity extends AppCompatActivity {
         TextView buyNowBtn_dialog = view.findViewById(R.id.btnBuyNow_buyNow);
         Glide.with(this).load(itemCartModel.getImage()).into(foodImage);
         foodName_dialog.setText(itemCartModel.getFoodName());
-        originalPrice_dialog.setText(String.valueOf(itemCartModel.getPrice()));
+        originalPrice_dialog.setText(VietNameseCurrencyFormat.getVietNameseCurrency(itemCartModel.getPrice()));
         float currentPrice = itemCartModel.getPrice() * (1 - (float) itemCartModel.getDiscount() / 100);
-        currentPrice_dialog.setText(String.valueOf(currentPrice));
-        discount_dialog.setText(String.valueOf(itemCartModel.getDiscount()));
+        currentPrice_dialog.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));
+        discount_dialog.setText("Giảm "+String.valueOf(itemCartModel.getDiscount())+"%");
         quantity_dialog.setText(String.valueOf(itemCartModel.getQuantity()));
         buyNowBtn_dialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Chuyen qua thanh toan
-
+                ArrayList<ItemCartModel> _selectedFood = new ArrayList<>();
+                _selectedFood.add(itemCartModel);
+                Intent intent = new Intent(DetailFoodActivity.this, PaymentActivity.class);
+                intent.putParcelableArrayListExtra("foodListChosend", _selectedFood);
+                startActivity(intent);
             }
         });
         decrease_dialog.setOnClickListener(new View.OnClickListener() {
@@ -203,8 +222,8 @@ public class DetailFoodActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         description.setText(bundle.getString("description"));
         foodName.setText(bundle.getString("foodname"));
-        currentPrice.setText(bundle.getString("currentprice"));
-        originalPrice.setText(bundle.getString("originalprice"));
+        currentPrice.setText(bundle.getString(VietNameseCurrencyFormat.getVietNameseCurrency(Float.parseFloat(bundle.getString("currentprice")))));
+        originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(Float.parseFloat(bundle.getString("originalprice"))));
         quantitySold.setText(String.valueOf(bundle.getInt("quantitySold")));
         sale.setText("Giảm " + String.valueOf(bundle.getInt("sale")) + "%");
         Glide.with(getApplicationContext()).load(bundle.getString("image")).into(foodImg);
@@ -294,4 +313,26 @@ public class DetailFoodActivity extends AppCompatActivity {
         super.onDestroy();
         compositeDisposable.clear();
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == PERMISSION_PHONECALL) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
+                    PermissionAlertDialog.requestPermissionAgain(DetailFoodActivity.this, new String[]{Manifest.permission.CALL_PHONE}, PERMISSION_PHONECALL);
+                } else {
+                    PermissionAlertDialog.showAlerDialogWarning(DetailFoodActivity.this);
+                }
+            } else {
+                Intent i = new Intent(Intent.ACTION_CALL);
+                i.setData(Uri.parse("tel:" + PHONE_NO));
+                startActivity(i);
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
 }

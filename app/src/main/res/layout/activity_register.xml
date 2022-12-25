@@ -61,7 +61,8 @@
             app:counterEnabled="true"
             app:counterMaxLength="30"
             app:endIconMode="clear_text"
-            app:startIconDrawable="@drawable/profile_nvg">
+
+            app:startIconDrawable="@drawable/ic_baseline_person_243">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/userName_RegisterActivity"

@@ -23,10 +23,14 @@ import com.example.foodapp.Activities.DetailFoodActivity;
 import com.example.foodapp.Activities.FindItemActivity;
 import com.example.foodapp.Activities.MainHomeActivity;
 import com.example.foodapp.Adapter.SearchedItemAdapter;
+import com.example.foodapp.Iterface.IClickAddItemListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
+import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
+import com.example.foodapp.SQLite.CartManagerSqLite;
 import com.example.foodapp.SQLite.FavoriteFoodManagerSqLite;
+import com.example.foodapp.Util.NotificationDialog;
 
 import java.util.List;
 
@@ -37,7 +41,7 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
  * Use the {@link FavoriteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavoriteFragment extends Fragment  {
+public class FavoriteFragment extends Fragment {
 
     private Context context;
     private MainHomeActivity mainHomeActivity;
@@ -50,6 +54,7 @@ public class FavoriteFragment extends Fragment  {
     List<FoodModel> foodList;
 
     FavoriteFoodManagerSqLite favoriteFoodManagerSqLite;
+    private CartManagerSqLite cartManagerSqLite;
 
     public FavoriteFragment() {
         // Required empty public constructor
@@ -94,6 +99,7 @@ public class FavoriteFragment extends Fragment  {
             context = getActivity();
             mainHomeActivity = (MainHomeActivity) getActivity();
             favoriteFoodManagerSqLite = new FavoriteFoodManagerSqLite(context);
+            cartManagerSqLite = new CartManagerSqLite(context);
         } catch (IllegalStateException e) {
             throw new IllegalStateException("MainActivity must implement callbacks");
         }
@@ -128,6 +134,17 @@ public class FavoriteFragment extends Fragment  {
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
+        }, new IClickAddItemListener() {
+            @Override
+            public void onClick(FoodModel food) {
+                cartManagerSqLite.addCart(new ItemCartModel(food.getName(), 1
+                        , (int) food.getPrice(), food.getDiscount()
+                        , food.getImage()));
+                NotificationDialog notificationDialog=new NotificationDialog(context);
+                notificationDialog.setContent("Đã thêm vào giỏ hàng");
+                notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                notificationDialog.show();
+            }
         });
         getAllFavoriteFood();
         favoriteFoodsRCV.setAdapter(searchedItemAdapter);
@@ -141,8 +158,8 @@ public class FavoriteFragment extends Fragment  {
         foodList = favoriteFoodManagerSqLite.getAllContacts();
         searchedItemAdapter.setData(foodList);
     }
-    void HandleDeleteAll()
-    {
+
+    void HandleDeleteAll() {
         deleteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

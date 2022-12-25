@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class InternetConnection {
-    public static final String BASE_URL="http://10.0.138.205/workspace/";
+    public static final String BASE_URL="http://10.0.153.174/workspace/";
     public static  boolean isConnected(Context context)
     {
         ConnectivityManager connectivityManager=(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

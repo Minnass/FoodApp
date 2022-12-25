@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.foodapp.Adapter.TabLayoutFragmentAdapter;
@@ -27,7 +28,7 @@ public class FoodCatetoryActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewPager2 mViewPager;
     private TabLayoutFragmentAdapter mTabLayoutFragmentAdapter;
-
+    private ImageView backbtn,cart;
     private EditText searchingbox;
 
     @Override
@@ -82,6 +83,23 @@ public class FoodCatetoryActivity extends AppCompatActivity {
             }
         }).attach();
         initFirstTab();
+        handleClick();
+    }
+
+    private void handleClick() {
+        backbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(FoodCatetoryActivity.this,CartActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     void initFirstTab() {
@@ -96,5 +114,7 @@ public class FoodCatetoryActivity extends AppCompatActivity {
         mTabLayout = findViewById(R.id.tabLayout);
         mViewPager = findViewById(R.id.view_paper2FoodCategory);
         searchingbox=findViewById(R.id.searchFood_foodCategoryActivity);
+        backbtn=findViewById(R.id.back_foodCategoryActivity);
+        cart=findViewById(R.id.cartListCategoryActivity);
     }
 }

@@ -27,6 +27,7 @@ import com.example.foodapp.Retrofit.RetrofitClient;
 import com.example.foodapp.SQLite.CartManagerSqLite;
 import com.example.foodapp.SQLite.FavoriteFoodManagerSqLite;
 import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.NotificationDialog;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class CartActivity extends AppCompatActivity {
     CartListAdapter cartListAdapter;
 
     List<ItemCartModel> foodList;
+
+    int totalProduct=0;
 
     private FoodAppApi mFoodAppApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -92,6 +95,7 @@ public class CartActivity extends AppCompatActivity {
                 if (isChecked) {
                     for (int i = 0; i < foodList.size(); i++) {
                         foodList.get(i).setSelected(true);
+                        numberOfSelection.setText(String.valueOf(foodList.size()));
                     }
                 } else {
                     for (int i = 0; i < foodList.size(); i++) {
@@ -134,7 +138,12 @@ public class CartActivity extends AppCompatActivity {
                 cartListAdapter.notifyDataSetChanged();
                 if (counter > 0) {
                     setPrice();
-                    Toast.makeText(CartActivity.this, "" + counter, Toast.LENGTH_SHORT).show();
+                    totalProduct=0;
+                    numberOfSelection.setText("(0)");
+                    NotificationDialog dialog=new NotificationDialog(CartActivity.this);
+                    dialog.setContent("Đã xóa"+ counter+" sản phẩm");
+                    dialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                    dialog.show();
                 }
             }
         });
@@ -146,11 +155,14 @@ public class CartActivity extends AppCompatActivity {
         if (foodList != null) {
             for (int position = 0; position < foodList.size(); position++) {
                 ItemCartModel item = foodList.get(position);
-                if (foodList.get(position).getDiscount() != 0) {
-                    _savingMoney += (((float) item.getDiscount() / 100) * item.getPrice()) * item.getQuantity();
+                if(item.isSelected())
+                {
+                    if (foodList.get(position).getDiscount() != 0) {
+                        _savingMoney += (((float) item.getDiscount() / 100) * item.getPrice()) * item.getQuantity();
+                    }
+                    float currentPrice = item.getPrice() * (1 - (float) item.getDiscount() / 100);
+                    _totalPrice += currentPrice * item.getQuantity();
                 }
-                float currentPrice = item.getPrice() * (1 - (float) item.getDiscount() / 100);
-                _totalPrice += currentPrice * item.getQuantity();
             }
         }
         totalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_totalPrice));
@@ -168,21 +180,35 @@ public class CartActivity extends AppCompatActivity {
 
 
     void initRecycleView() {
-
         cartListAdapter = new CartListAdapter(foodList, this, new ISqliteLisener() {
             @Override
             public void updateQuantity(ItemCartModel item, int newQuantity) {
                 cartManagerSqLite.updateQuantity(item, newQuantity);
-                setPrice();
             }
 
             @Override
             public void deleteItems(List<ItemCartModel> items) {
                 cartManagerSqLite.deleteSomeItems(items);
+            }
+
+            @Override
+            public void selectedItem(int index) {
+                if(foodList.get(index).isSelected())
+                {
+                    totalProduct+=1;
+                    numberOfSelection.setText("("+totalProduct+")");
+                }
+                else
+                {
+                    if(totalProduct>0)
+                    {
+                        totalProduct-=1;
+                    }
+                    numberOfSelection.setText("("+totalProduct+")");
+                }
                 setPrice();
             }
         });
-
         foodListRCV.setAdapter(cartListAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         foodListRCV.setLayoutManager(linearLayoutManager);
@@ -204,18 +230,24 @@ public class CartActivity extends AppCompatActivity {
     void HandleBuyButton() {
         //Neu Chua co don hang Toast len ban chua chon san pham
 
-        ArrayList<ItemCartModel> temp = new ArrayList<>();
-        int counter = 0;
-        for (int i = 0; i < foodList.size(); i++) {
-            if (foodList.get(i).isSelected()) {
-                temp.add(foodList.get(i));
-            }
-        }
-        if (counter > 0) {
-            Intent intent = new Intent(CartActivity.this, PaymentActivity.class);
-            intent.putParcelableArrayListExtra("foodListChosend", temp);
-            startActivity(intent);
-        }
+       buyBtn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               ArrayList<ItemCartModel> temp = new ArrayList<>();
+               int counter = 0;
+               for (int i = 0; i < foodList.size(); i++) {
+                   if (foodList.get(i).isSelected()) {
+                       temp.add(foodList.get(i));
+                       counter++;
+                   }
+               }
+               if (counter > 0) {
+                   Intent intent = new Intent(CartActivity.this, PaymentActivity.class);
+                   intent.putParcelableArrayListExtra("foodListChosend", temp);
+                   startActivity(intent);
+               }
+           }
+       });
 
     }
 }

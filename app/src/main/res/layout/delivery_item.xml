@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="15dp"
+    android:padding="8dp"
+    android:layout_marginBottom="10dp"
     android:gravity="center_vertical"
     android:background="@drawable/bg_blue_textview">
 
@@ -19,14 +20,27 @@
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/deliveryName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bình thường"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/deliveryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bình thường"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/checkImage"
+                android:src="@drawable/ic_baseline_check_circle_24" />
+        </RelativeLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:textColor="@color/black"
@@ -37,10 +51,4 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <ImageView
-        android:layout_marginRight="10dp"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:id="@+id/checkImage"
-        android:src="@drawable/ic_baseline_check_circle_24" />
 </LinearLayout>

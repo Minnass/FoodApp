@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +25,7 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
     public DeliveryAdapter(List<DeliveryModel> deliveryList, Context context) {
         DeliveryList = deliveryList;
         this.context = context;
-        checkedPostion = 0;
+        checkedPostion =-1;
     }
 
     public void setData(List<DeliveryModel> list) {
@@ -63,8 +64,9 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
             public void onClick(View v) {
                 if (checkedPostion != holder.getAdapterPosition()) {
                     holder.checkImg.setVisibility(View.VISIBLE);
+                    int temp=checkedPostion;
                     checkedPostion = holder.getAdapterPosition();
-                    notifyItemChanged(checkedPostion);
+                    notifyItemChanged(temp);
                 }
             }
         });
@@ -72,13 +74,16 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
 
     @Override
     public int getItemCount() {
-        return 0;
+       if (DeliveryList!=null)
+       {
+           return  DeliveryList.size();
+       }
+       return 0;
     }
 
     public class DeliveryViewHolder extends RecyclerView.ViewHolder {
         TextView deliveryName, description;
         ImageView checkImg, deliveryImg;
-
         public DeliveryViewHolder(@NonNull View itemView) {
             super(itemView);
             deliveryName = itemView.findViewById(R.id.deliveryName);

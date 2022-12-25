@@ -59,8 +59,8 @@
                 android:id="@+id/addTocArt"
                 android:layout_width="14dp"
                 android:layout_height="14dp"
-                android:layout_marginRight="10dp"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
                 android:src="@drawable/additem" />
 
             <TextView

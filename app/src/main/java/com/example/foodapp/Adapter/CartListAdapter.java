@@ -87,10 +87,12 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
                 if(isChecked)
                 {
                     itemCartModel.setSelected(true);
+                    mILisener.selectedItem(holder.getAdapterPosition());
                 }
                 else
                 {
                     itemCartModel.setSelected(false);
+                    mILisener.selectedItem(holder.getAdapterPosition());
                 }
 
             }

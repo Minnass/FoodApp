@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="13dp">
+
+        <TextView
+
+            android:id="@+id/order_dateTime_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="18:07 15/12/2002"
+            android:textSize="15dp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/totalPrice_cartHistory_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="1,000,000 vnd"
+            android:textColor="#F1FF0000"
+            android:textSize="15dp"
+            android:textStyle="bold|italic" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/cartCode_cartHistoryItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:text="Mã đặt hàng: ASDDADADDA"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="#F1C5C5E6" />
+</LinearLayout>

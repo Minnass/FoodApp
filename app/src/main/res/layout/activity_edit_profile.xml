@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4CAF50"
+        android:background="#FF0537"
         android:padding="15dp">
 
         <ImageView
@@ -98,10 +98,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="60dp"
                 android:hint="Mật khẩu cũ"
-                
-                app:counterTextColor="@color/white"
-                app:endIconMode="password_toggle"
-                app:helperTextTextColor="#F48E8E">
+                app:endIconMode="clear_text"
+                app:helperTextTextColor="#F1FF0000"
+               >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/oldPassword"
@@ -121,9 +120,10 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="60dp"
                 android:hint="Mật khẩu mới"
-                app:counterTextColor="@color/white"
-                app:endIconMode="password_toggle"
-                app:helperTextTextColor="#F48E8E">
+                app:helperTextTextColor="#F1FF0000"
+                app:endIconMode="clear_text"
+
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/newPassword"
@@ -143,9 +143,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="30dp"
                 android:hint="Xác nhận"
-                app:counterTextColor="@color/white"
-                app:endIconMode="password_toggle"
-                app:helperTextTextColor="#F48E8E">
+                app:helperTextTextColor="#F1FF0000"
+                app:endIconMode="clear_text"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/verifyPassword"
@@ -168,6 +168,19 @@
                 android:textColor="@color/white"
                 android:textSize="15dp"
                 android:textStyle="bold" />
+            <TextView
+
+                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:id="@+id/error"
+                android:textSize="16dp"
+                android:textColor="#f12121"
+                android:text="Mật khảu không chính xác."
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_below="@id/VerifyPassword_Layout"
+                android:layout_height="wrap_content"/>
         </RelativeLayout>
 
 </LinearLayout>

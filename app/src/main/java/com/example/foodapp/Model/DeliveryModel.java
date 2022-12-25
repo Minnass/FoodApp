@@ -3,26 +3,26 @@ package com.example.foodapp.Model;
 import java.io.Serializable;
 
 public class DeliveryModel implements Serializable {
-        String deliveryName;
-        String deliveryImage;
+        String name;
+        String icon;
         int fee;
         String description;
         boolean checked;
 
-    public DeliveryModel(String deliveryName, String deliveryImage, int fee, String description) {
-        this.deliveryName = deliveryName;
-        this.deliveryImage = deliveryImage;
+    public DeliveryModel(String name, String icon, int fee, String description) {
+        this.name = name;
+        this.icon = icon;
         this.fee = fee;
         this.description = description;
         checked=false;
     }
 
     public String getDeliveryName() {
-        return deliveryName;
+        return name;
     }
 
-    public void setDeliveryName(String deliveryName) {
-        this.deliveryName = deliveryName;
+    public void setDeliveryName(String name) {
+        this.name = name;
     }
 
     public int getFee() {
@@ -42,10 +42,10 @@ public class DeliveryModel implements Serializable {
     }
 
     public String getDeliveryImage() {
-        return deliveryImage;
+        return icon;
     }
 
-    public void setDeliveryImage(String deliveryImage) {
-        this.deliveryImage = deliveryImage;
+    public void setDeliveryImage(String icon) {
+        this.icon = icon;
     }
 }

@@ -4,12 +4,15 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
@@ -24,9 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.chivorn.datetimeoptionspicker.DateTimePickerView;
 import com.example.foodapp.Adapter.PaymentAdapter;
 import com.example.foodapp.Iterface.IClickItemCartListener;
 import com.example.foodapp.Model.DeliveryModel;
+import com.example.foodapp.Model.SQLiteModel.AddressModel;
 import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.Model.SaleCodeModel;
 import com.example.foodapp.R;
@@ -34,12 +39,19 @@ import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
 import com.example.foodapp.SQLite.CartManagerSqLite;
 import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.NotificationDialog;
+import com.example.foodapp.Util.RandomIdUtils;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -64,22 +76,77 @@ public class PaymentActivity extends AppCompatActivity {
 
     private SaleCodeModel saleCodeModel;
     private DeliveryModel deliveryModel;
-
-    private CartManagerSqLite cartManagerSqLite=new CartManagerSqLite(this);
+    private AddressModel addressModel;
+    private String time;
+    private CartManagerSqLite cartManagerSqLite = new CartManagerSqLite(this);
     private FoodAppApi mFoodAppAPi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    ActivityResultLauncher<Intent> addingAddressActivityResultLauncher;
+    ActivityResultLauncher<Intent> SelectedDeliveryTypeLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
         mappingID();
-        saleCodeModel = new SaleCodeModel("","", 0,false);
-        HandleAddAdressButton();
+        saleCodeModel = new SaleCodeModel("", "", 0, false);
+        saleCode.setText(VietNameseCurrencyFormat.getVietNameseCurrency(0));
+        registerActivitiLauncher();
         initFoodListRecycleView();
+        HandleAddAdressButton();
         handleDeliveryType();
-        handleDeliveryTime();
+//        handleDeliveryTime();
         handleCheckValidSaleCode();
+        handleButton();
+    }
+
+
+    void registerActivitiLauncher() {
+        addingAddressActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == 999) {
+                            Intent intent = result.getData();
+                            Bundle bundle = intent.getExtras();
+                            if (bundle != null) {
+                                String type = bundle.getString("type");
+                                addressModel = (AddressModel) bundle.getSerializable("chosenAddress");
+                                if (type.equals("init")) {
+                                    receivedPerson.setText(addressModel.getName());
+                                    phoneNumber.setText(addressModel.getPhone());
+                                    address.setText(addressModel.getAddress());
+                                    locationButton.setVisibility(View.VISIBLE);
+                                    nochoiceCaption.setVisibility(View.GONE);
+                                    noAddressLabel.setVisibility(View.GONE);
+                                } else {
+                                    receivedPerson.setText(addressModel.getName());
+                                    phoneNumber.setText(addressModel.getPhone());
+                                    address.setText(addressModel.getAddress());
+                                }
+                            }
+                        }
+                    }
+                });
+
+
+        SelectedDeliveryTypeLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == 998) {
+                            Intent intent = result.getData();
+                            Bundle bundle = intent.getExtras();
+                            deliveryModel = (DeliveryModel) bundle.getSerializable("selectedDelivery");
+                            String _deliveryName = deliveryModel.getDeliveryName();
+                            int _deliveryFee = deliveryModel.getFee();
+                            deliveryName.setText(_deliveryName);
+                            deliveryPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_deliveryFee));
+                            finalDeliveryFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_deliveryFee));
+                            finalTotalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(countFinalPrice()));
+                        }
+                    }
+                });
     }
 
     void mappingID() {
@@ -122,27 +189,29 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     public void setData() {
-        foodList = getIntent().getParcelableArrayListExtra("foodListChosend");
+        foodList = new ArrayList<>(getIntent().getParcelableArrayListExtra("foodListChosend"));
         paymentAdapter.setData(foodList);
-        totalProductNumber.setText("Tổng" + foodList.size() + " sản phẩm");
-        setPrice();
+        totalProductNumber.setText("Tổng " + foodList.size() + " sản phẩm");
+        finalProductPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(countTotalProductPrice()));
+        finalTotalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(countFinalPrice()));
     }
 
-    void setPrice()
-    {
-        float _totalProductPrice=0;
-        for(int i=0;i<foodList.size();i++)
-        {
-            _totalProductPrice+=foodList.get(i).getPrice()*foodList.get(i).getQuantity();
+    float countTotalProductPrice() {
+        float _totalProductPrice = 0;
+        for (int i = 0; i < foodList.size(); i++) {
+            _totalProductPrice += foodList.get(i).getPrice() * foodList.get(i).getQuantity();
         }
-        finalProductPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_totalProductPrice));
-        finalDeliveryFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(deliveryModel.getFee()));
-        saleCode.setText(VietNameseCurrencyFormat.getVietNameseCurrency(saleCodeModel.getSaleValue()));
-        float _totalPrice=_totalProductPrice+deliveryModel.getFee()-saleCodeModel.getSaleValue();
-        finalTotalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_totalPrice));
+        return _totalProductPrice;
     }
-    void handleButton()
-    {
+
+    float countFinalPrice() {
+        float productPrice = countTotalProductPrice();
+        float _sale = (saleCodeModel!=null)?saleCodeModel.getSaleValue():0;
+        float deliveryFee =(deliveryModel!=null)? deliveryModel.getFee():0;
+        return productPrice + _sale + deliveryFee;
+    }
+
+    void handleButton() {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,21 +220,32 @@ public class PaymentActivity extends AppCompatActivity {
         });
 
         orderBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                cartManagerSqLite.deleteALl();
-                Toast.makeText(PaymentActivity.this,"Dat Hang thanh cong",Toast.LENGTH_SHORT).show();
-                finish();;
-                //
-
+                if (checkFullInformation()) {
+                    sendToServer();
+                } else {
+                    NotificationDialog notificationDialog = new NotificationDialog(PaymentActivity.this);
+                    notificationDialog.setContent("Vui lòng nhập đầy đủ thông tin!");
+                    notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_warning_24);
+                }
             }
         });
+    }
+
+    Boolean checkFullInformation() {
+        if (addressModel == null || deliveryModel == null || time.equals("")) {
+            return false;
+        }
+        return true;
     }
 
     void ClickOpenBottomSheetDialog(ItemCartModel item, PaymentAdapter.PaymentViewHolder viewHolder) {
         ItemCartModel cacheItem = new ItemCartModel(
                 item.getFoodName(), item.getQuantity(), item.getPrice(), item.getDiscount(), item.getImage()
         );
+
         View view = getLayoutInflater().inflate(R.layout.update_payment_bottomsheet, null);
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -246,15 +326,51 @@ public class PaymentActivity extends AppCompatActivity {
         changingDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Chon ngay o day
+                initTimePicker();
             }
         });
     }
+
+    private void initTimePicker() {
+        Calendar selectedDate = Calendar.getInstance();
+        Calendar startDate = Calendar.getInstance();
+        Date from = startDate.getTime();
+        startDate.set(2022, 12, 29);
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.DATE, 3);
+        Date end = endDate.getTime();
+
+        DateTimePickerView dateTimePickerView = new DateTimePickerView.Builder(this, new DateTimePickerView.OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {//callback
+                SimpleDateFormat VietNameseFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                SimpleDateFormat generalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                deliveryTime.setText(VietNameseFormat.format(date));
+                time = generalFormat.format(date);
+            }
+        })
+                .setType(new boolean[]{false, true, true, true, true, false})   // year-month-day-hour-min-sec
+                .setCancelText("Hủy")
+                .setSubmitText("Hoàn thành")
+                .setContentSize(15)
+                .setTitleSize(15)
+                .setTitleText("Chọn ngày")
+                .setOutSideCancelable(true)// default is true
+                .isCyclic(true)// default is false
+                .setTitleColor(Color.BLUE)
+                .setSubmitColor(Color.BLACK)
+                .setCancelColor(Color.BLACK)
+                .setSubCalSize(10)
+                .setRangDate(startDate, endDate)
+                .build();
+    }
+
 
     void handleCheckValidSaleCode() {
         applySaleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (saleCodeEdit.getText().toString().equals("")) {
                     saleResult.setText("Vui lòng nhập mã giảm giá");
                     saleResult.setTextColor(Color.BLUE);
@@ -267,12 +383,16 @@ public class PaymentActivity extends AppCompatActivity {
                                         if (givenCheckedSaleCode.getSuccessful()) {
                                             saleResult.setText(givenCheckedSaleCode.getSaleCodeModel().getCodeName());
                                             saleResult.setTextColor(Color.BLUE);
-                                        }
-                                        else
-                                        {
+                                            saleCodeModel=givenCheckedSaleCode.getSaleCodeModel();
+                                            saleCode.setText(VietNameseCurrencyFormat.getVietNameseCurrency(givenCheckedSaleCode.getSaleCodeModel().getSaleValue()));
+                                            finalTotalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(countFinalPrice()));
+                                        } else {
                                             saleResult.setText("Mã giảm giá không tồn tại.");
                                             saleResult.setTextColor(Color.RED);
+                                            saleCode.setText(VietNameseCurrencyFormat.getVietNameseCurrency(0));
+                                            finalTotalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(countFinalPrice()));
                                         }
+                                        saleResult.setVisibility(View.VISIBLE);
                                     },
                                     error -> {
                                         Log.d("Loi", error.getMessage());
@@ -299,6 +419,8 @@ public class PaymentActivity extends AppCompatActivity {
                                 deliveryName.setText(_deliveryName);
                                 deliveryPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_deliveryFee));
                                 deliveryModel = allType.get(0);
+                                finalDeliveryFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_deliveryFee));
+                                finalTotalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(countFinalPrice()));
                             }
                         },
                         error -> {
@@ -306,26 +428,11 @@ public class PaymentActivity extends AppCompatActivity {
                         }
                 )
         );
-
         delivery_form.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                        new ActivityResultCallback<ActivityResult>() {
-                            @Override
-                            public void onActivityResult(ActivityResult result) {
-                                if (result.getResultCode() == 998) {
-                                    Intent intent = result.getData();
-                                    Bundle bundle = intent.getExtras();
-                                    deliveryModel = (DeliveryModel) bundle.getSerializable("selectedDelivery");
-                                    String _deliveryName = deliveryModel.getDeliveryName();
-                                    int _deliveryFee = deliveryModel.getFee();
-                                    deliveryName.setText(_deliveryName);
-                                    deliveryPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_deliveryFee));
-
-                                }
-                            }
-                        });
+                Intent intent = new Intent(PaymentActivity.this, DeliveryFormActivity.class);
+                SelectedDeliveryTypeLauncher.launch(intent);
             }
         });
     }
@@ -379,52 +486,73 @@ public class PaymentActivity extends AppCompatActivity {
         addNewAddressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityResultLauncher<Intent> addingAddressActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                        new ActivityResultCallback<ActivityResult>() {
-                            @Override
-                            public void onActivityResult(ActivityResult result) {
-                                if (result.getResultCode() == 999) {
-                                    Intent intent = result.getData();
-                                    Bundle bundle = intent.getExtras();
-                                    if (bundle != null) {
-                                        receivedPerson.setText(bundle.getString("name"));
-                                        phoneNumber.setText(bundle.getString("phone"));
-                                        address.setText(bundle.getString("address"));
-                                        locationButton.setVisibility(View.VISIBLE);
-                                        nochoiceCaption.setVisibility(View.GONE);
-                                        noAddressLabel.setVisibility(View.GONE);
-                                    }
-                                }
-                            }
-                        });
                 Intent intent = new Intent(PaymentActivity.this, AddressActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("type", "init");
+                intent.putExtras(bundle);
                 addingAddressActivityResultLauncher.launch(intent);
             }
-
-
         });
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityResultLauncher<Intent> addingAddressActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                        new ActivityResultCallback<ActivityResult>() {
-                            @Override
-                            public void onActivityResult(ActivityResult result) {
-                                if (result.getResultCode() == 999) {
-                                    Intent intent = result.getData();
-                                    Bundle bundle = intent.getExtras();
-                                    if (bundle != null) {
-                                        receivedPerson.setText(bundle.getString("name"));
-                                        phoneNumber.setText(bundle.getString("phone"));
-                                        address.setText(bundle.getString("address"));
-                                    }
-                                }
-                            }
-                        });
                 Intent intent = new Intent(PaymentActivity.this, AddressActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("type", "setting");
+                intent.putExtras(bundle);
                 addingAddressActivityResultLauncher.launch(intent);
             }
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    void sendToServer() {
+        String orderCode = RandomIdUtils.createId();
+        compositeDisposable.add(mFoodAppAPi.addHistoryOrder(MainHomeActivity.user.getUserID(), orderCode,
+                                time, Float.parseFloat(finalTotalPrice.getText().toString()),
+                                receivedPerson.getText().toString(),
+                                phoneNumber.getText().toString(),
+                                address.getText().toString(),
+                                saleCodeModel.getSaleValue(),
+                                deliveryModel.getDeliveryName(),
+                                "Tiền mặt", deliveryModel.getFee()
+                        )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                action -> {
+                                    if (action) {
+                                        NotificationDialog notificationDialog = new NotificationDialog(PaymentActivity.this);
+                                        notificationDialog.setContent("Đặt hàng thành công");
+                                        notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                                        cartManagerSqLite.deleteALl();
+                                        notificationDialog.show();
+                                        finish();
+                                    }
+                                },
+                                error -> {
+                                    Log.d("Loi", error.getMessage());
+                                }
+                        )
+        );
+        for (ItemCartModel item : foodList) {
+            sendOrderDetail(orderCode, item.getFoodName(), item.getQuantity(), item.getPrice(), item.getDiscount(), item.getImage());
+        }
+    }
+
+    void sendOrderDetail(String orderCode, String foodName, int quantity, float price, int discount, String image) {
+        compositeDisposable.add(mFoodAppAPi.sendOrderedFoodDetail(orderCode, foodName, quantity, price, discount, image)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        action -> {
+                            if (action) {
+                            }
+                        },
+                        error -> {
+                            Log.d("Loi", error.getMessage());
+                        }
+                )
+        );
+    }
 }

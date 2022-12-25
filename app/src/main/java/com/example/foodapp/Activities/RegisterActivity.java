@@ -120,6 +120,10 @@ public class RegisterActivity extends AppCompatActivity {
                         object -> {
                             if (object.isSuccess()) {
                                 Intent intent = new Intent(RegisterActivity.this, InformationRegisterActivity.class);
+                                Bundle bundle=new Bundle();
+                                bundle.putString("email",email.getText().toString());
+                                bundle.putString("userName",userName.getText().toString());
+                                bundle.putString("passWord",password.getText().toString());
                                 startActivity(intent);
                             } else {
                                 error.setText(object.getMessage());

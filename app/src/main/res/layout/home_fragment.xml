@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="#F1E9E9ED"
     android:layout_height="match_parent">
     <RelativeLayout
-        android:background="#4CAF50"
+        android:background="#F44336"
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,8 +25,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hi Minnas!"
-                android:textColor="#dd3d00"
-                android:textSize="20sp"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -33,8 +34,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Order &amp; Eat"
-                android:textColor="#f000"
-                android:textSize="20sp" />
+                android:textColor="#DCDCDC"
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -42,11 +43,12 @@
             android:id="@+id/avatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            app:civ_circle_background_color="@color/white"
             android:layout_alignParentRight="true"
-            android:src="@drawable/bussiness_man"
-            />
+            android:src="@drawable/profile_nvg" />
 
         <EditText
+            android:layout_marginTop="5dp"
             android:id="@+id/seach_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +57,7 @@
             android:drawableLeft="@android:drawable/ic_menu_search"
             android:focusableInTouchMode="true"
             android:hint="Find your food"
-            android:padding="10dp"
+            android:padding="5dp"
             android:textSize="20dp"
             android:textStyle="italic" />
     </RelativeLayout>
@@ -107,8 +109,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/acme"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:text="Categories"
+                        android:textColor="#F44336"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
@@ -121,8 +125,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/acme"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:text="Popular"
+                        android:textColor="#F44336"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
@@ -134,9 +140,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:fontFamily="@font/acme"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
                         android:text="For your choice"
+                        android:textColor="#F44336"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 

@@ -61,7 +61,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         {
             holder.defaultAddress.setVisibility(View.VISIBLE);
         }
-        holder.container.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onChosingItemClick(holder.getAdapterPosition());
@@ -81,15 +81,15 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
     public class AddressViewHolder extends  RecyclerView.ViewHolder{
         TextView userName,phoneNumber,setting,address,defaultAddress;
-        LinearLayout container;
+
         public AddressViewHolder(@NonNull View itemView) {
             super(itemView);
             userName=itemView.findViewById(R.id.userName_itemaddress);
             phoneNumber=itemView.findViewById(R.id.phoneNumber_itemaddress);
             address=itemView.findViewById(R.id.address_addressitem);
-            setting=itemView.findViewById(R.id.address_addressitem);
+            setting=itemView.findViewById(R.id.addressSetting);
             defaultAddress=itemView.findViewById(R.id.defaultAddress);
-            container=itemView.findViewById(R.id.addressItem_container);
+
         }
     }
 }

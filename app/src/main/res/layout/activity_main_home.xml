@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F1EDEDF1"
+    android:background="#F1E9E9ED"
     tools:context=".Activities.MainHomeActivity">
 
     <FrameLayout
@@ -20,7 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:background="#FFFFFF"
-        app:menu="@menu/bottom_nvg"></com.google.android.material.bottomnavigation.BottomNavigationView>
+        android:background="#FFFCFC"
+        app:itemIconTint="@color/bottom_nvg"
+        app:itemTextColor="#FF1100"
+        app:itemRippleColor="@color/purple_200"
+        app:menu="@menu/bottom_nvg" />
+
 
 </RelativeLayout>

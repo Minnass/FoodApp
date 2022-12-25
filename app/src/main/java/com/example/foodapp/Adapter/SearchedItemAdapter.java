@@ -26,10 +26,11 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
     IClickFoodItemListener mIClickFoodItemListener;
     IClickAddItemListener mIClickAddingItemListener;
 
-    public SearchedItemAdapter(List<FoodModel> foodList, Context context, IClickFoodItemListener mIClickFoodItemListener) {
+    public SearchedItemAdapter(List<FoodModel> foodList, Context context, IClickFoodItemListener mIClickFoodItemListener, IClickAddItemListener mIClickAddingItemListener) {
         this.foodList = foodList;
         this.context = context;
         this.mIClickFoodItemListener = mIClickFoodItemListener;
+        this.mIClickAddingItemListener = mIClickAddingItemListener;
     }
 
     public void setData(List<FoodModel> list) {
@@ -64,7 +65,12 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
                 mIClickFoodItemListener.onItemClickHandler(food);
             }
         });
-
+        holder.btnAddItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIClickAddingItemListener.onClick(food);
+            }
+        });
     }
 
     @Override

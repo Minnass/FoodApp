@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,16 +28,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodapp.Activities.DetailFoodActivity;
 import com.example.foodapp.Activities.FindItemActivity;
+import com.example.foodapp.Adapter.FoodListAdapter;
 import com.example.foodapp.Adapter.SearchedItemAdapter;
 import com.example.foodapp.Adapter.SearchingCategoryAdapter;
 import com.example.foodapp.Enum.Categories;
 import com.example.foodapp.Enum.Option;
+import com.example.foodapp.Iterface.IClickAddItemListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
+import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Retrofit.FoodAppApi;
+import com.example.foodapp.Retrofit.RetrofitClient;
+import com.example.foodapp.SQLite.CartManagerSqLite;
+import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.NotificationDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ReturnedFoodsFragment extends Fragment {
     private FindItemActivity findItemActivity;
@@ -48,6 +61,12 @@ public class ReturnedFoodsFragment extends Fragment {
     private List<FoodModel> foodList;
     Dialog filterDialog;
 
+    private  String searchedKeyword;
+
+    private CartManagerSqLite cartManagerSqLite;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private FoodAppApi mFoodAppApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
+
     public static ReturnedFoodsFragment newInstance() {
         ReturnedFoodsFragment fragment = new ReturnedFoodsFragment();
         return fragment;
@@ -58,12 +77,18 @@ public class ReturnedFoodsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public  void setKeyWord(String keyWord)
+    {
+        searchedKeyword = keyWord;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
             context = getActivity();
             findItemActivity = (FindItemActivity) getActivity();
+            cartManagerSqLite = new CartManagerSqLite(context);
         } catch (IllegalStateException e) {
             throw new IllegalStateException("MainActivity must implement callbacks");
         }
@@ -96,18 +121,29 @@ public class ReturnedFoodsFragment extends Fragment {
         adapter = new SearchedItemAdapter(foodList, context, new IClickFoodItemListener() {
             @Override
             public void onItemClickHandler(FoodModel food) {
-                Intent intent=new Intent(context, DetailFoodActivity.class);
-                Bundle bundle =new Bundle();
-                bundle.putString("foodname",food.getName().toString());
-                bundle.putString("image",food.getImage().toString());
-                bundle.putString("description",food.getDescription());
-                bundle.putString("originalprice",String.valueOf(food.getPrice()));
-                bundle.putInt("sale",food.getDiscount());
-                bundle.putInt("quantitySold",food.getQuantity());
-                float currentPrice = food.getPrice() * (1 - (float)food.getDiscount() / 100);
-                bundle.putString("currentprice",String.valueOf(currentPrice));
+                Intent intent = new Intent(context, DetailFoodActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("foodname", food.getName().toString());
+                bundle.putString("image", food.getImage().toString());
+                bundle.putString("description", food.getDescription());
+                bundle.putString("originalprice", String.valueOf(food.getPrice()));
+                bundle.putInt("sale", food.getDiscount());
+                bundle.putInt("quantitySold", food.getQuantity());
+                float currentPrice = food.getPrice() * (1 - (float) food.getDiscount() / 100);
+                bundle.putString("currentprice", String.valueOf(currentPrice));
                 intent.putExtras(bundle);
                 startActivity(intent);
+            }
+        }, new IClickAddItemListener() {
+            @Override
+            public void onClick(FoodModel food) {
+                cartManagerSqLite.addCart(new ItemCartModel(food.getName(), 1
+                        , (int) food.getPrice(), food.getDiscount()
+                        , food.getImage()));
+                NotificationDialog notificationDialog=new NotificationDialog(context);
+                notificationDialog.setContent("Đã thêm vào giỏ hàng");
+                notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                notificationDialog.show();
             }
         });
         returnedFoodListRCV.setAdapter(adapter);
@@ -126,59 +162,81 @@ public class ReturnedFoodsFragment extends Fragment {
         WindowManager.LayoutParams windowAttributes = window.getAttributes();
         windowAttributes.gravity = Gravity.RIGHT;
         window.setAttributes(windowAttributes);
-        filterDialog.setCancelable(false);
+        filterDialog.setCancelable(true);
         TextView btnFilderDelete = filterDialog.findViewById(R.id.btnFilterDelete);
-        TextView btnCloseFilter=filterDialog.findViewById(R.id.btnCloseDialog);
-        GridView categoryGridView=filterDialog.findViewById(R.id.category_filter);
-        GridView typeFilterGridView=filterDialog.findViewById(R.id.typeFilter);
-        List<String> filer1=new ArrayList<>();
-        List<String> filter2=new ArrayList<>();
-        for(Categories value:Categories.values())
-        {
-            filer1.add(value.toString());
-        }
-        for (Option value: Option.values())
-        {
-            filter2.add(value.toString());
-        }
-        SearchingCategoryAdapter searchingCategoryAdapter1=new SearchingCategoryAdapter(filer1,context);
-        SearchingCategoryAdapter searchingCategoryAdapter2=new SearchingCategoryAdapter(filter2,context);
+        TextView btnCloseFilter = filterDialog.findViewById(R.id.btnCloseDialog);
+        GridView categoryGridView = filterDialog.findViewById(R.id.category_filter);
+        GridView typeFilterGridView = filterDialog.findViewById(R.id.typeFilter);
+
+        SearchingCategoryAdapter searchingCategoryAdapter1 = new SearchingCategoryAdapter(context, "Categories");
+        SearchingCategoryAdapter searchingCategoryAdapter2 = new SearchingCategoryAdapter(context, "Option");
         categoryGridView.setAdapter(searchingCategoryAdapter1);
         typeFilterGridView.setAdapter(searchingCategoryAdapter2);
-        categoryGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                adapter.notifyDataSetChanged(); // call it here
-                if(categoryGridView.isItemChecked(position)) {
-                    view = categoryGridView.getChildAt(position);
-                    view.setBackgroundColor(Color.DKGRAY);
-                }else {
-                    view = categoryGridView.getChildAt(position);
-                    view.setBackgroundColor(Color.RED); //the color code is the background color of GridView
-                }
-                Toast.makeText(findItemActivity, filer1.get(position), Toast.LENGTH_SHORT).show();
-            }
-        });
-        typeFilterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(findItemActivity,filter2.get(position),Toast.LENGTH_SHORT).show();
-            }
-        });
+
         btnFilderDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(findItemActivity, "xoa", Toast.LENGTH_SHORT).show();
+                searchingCategoryAdapter1.resetPositionChecked();
+                searchingCategoryAdapter2.resetPositionChecked();
             }
         });
         btnCloseFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(findItemActivity, "ok", Toast.LENGTH_SHORT).show();
+                FilterData(searchedKeyword,(Categories) searchingCategoryAdapter1.getCheckedKeyWord(),(Option) searchingCategoryAdapter2.getCheckedKeyWord());
                 filterDialog.dismiss();
             }
         });
     }
 
+    void FilterData(String firstKeyword, Categories category, Option option) {
+        String categoryKeyword = (category != null) ? category.toString() : "null";
+        String optionKeyword = (option != null) ? option.toString() : "null";
 
+        if (categoryKeyword.equals("null") && optionKeyword.equals("null")) {
+            searchFoodName();
+
+        }
+        else
+        {
+            compositeDisposable.add(mFoodAppApi.filterFood(firstKeyword, categoryKeyword, optionKeyword)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            foodsReturned -> {
+                                if (foodsReturned != null) {
+                                    adapter.setData(foodsReturned);
+                                    totalResult.setText("(" + String.valueOf(foodsReturned.size()) + " kết quả)");
+                                }
+                            },
+                            error ->
+                            {
+                                Log.d("Loi", error.getMessage());
+                            }
+                    )
+            );
+        }
+
+
+    }
+    void searchFoodName() {
+
+        compositeDisposable.add(mFoodAppApi.searchFood(searchedKeyword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        foodsReturned -> {
+                            if( foodsReturned!=null)
+                            {
+                                adapter.setData(foodsReturned);
+                                totalResult.setText("(" + String.valueOf(foodsReturned.size()) + " kết quả)");
+                            }
+                        },
+                        error->
+                        {
+                            Log.d("Loi",error.getMessage());
+                        }
+                )
+        );
+    }
 }

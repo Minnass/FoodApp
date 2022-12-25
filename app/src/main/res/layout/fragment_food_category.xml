@@ -35,22 +35,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/parentFragmentFoodCategory"
-        android:background="#FFFFFF" />
-<LinearLayout
+        android:background="#FFFFFF"
 
+        />
+<LinearLayout
+    android:id="@+id/bottom_bar"
+    android:background="#E6E6E6"
     android:orientation="horizontal"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
     android:layout_width="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="15dp"
     android:layout_height="40dp">
     <ImageView
+        android:id="@+id/refresh"
         android:layout_width="40dp"
         android:padding="10dp"
         android:layout_height="match_parent"
         android:src="@drawable/funnel"
         />
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#BDABAB"/>
     <TextView
+        android:id="@+id/newOption"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:textSize="15dp"
         android:text="Mới nhất"
@@ -58,7 +68,13 @@
         android:gravity="center"
         android:padding="5dp"
         />
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#BDABAB"/>
     <TextView
+        android:id="@+id/hotSaleOption"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:textSize="15dp"
         android:text="Bán chạy"

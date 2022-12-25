@@ -8,4 +8,6 @@ public interface ISqliteLisener {
     public  void updateQuantity(ItemCartModel item,int newQuantity);
 
     public  void deleteItems(List<ItemCartModel> items);
+
+    public void selectedItem(int index);
 }

@@ -2,6 +2,7 @@ package com.example.foodapp.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 
@@ -13,18 +14,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.foodapp.Activities.DetailFoodActivity;
 import com.example.foodapp.Adapter.SearchedItemAdapter;
+import com.example.foodapp.Enum.Option;
+import com.example.foodapp.Iterface.IClickAddItemListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
+import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
+import com.example.foodapp.SQLite.CartManagerSqLite;
 import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Enum.Categories;
+import com.example.foodapp.Util.NotificationDialog;
+import com.example.foodapp.Util.TranslateAnimationUtil;
 
 
 import java.util.List;
@@ -44,13 +53,15 @@ public class FoodCategoryFragment extends Fragment {
     private static final String TYPE = "CATEGORY_TYPE";
     private  Categories foodType;
 
-
+    private CartManagerSqLite cartManagerSqLite;
 
     CompositeDisposable compositeDisposable=new CompositeDisposable();
     FoodAppApi mFoodAppApi;
 
-
+    private LinearLayout bottomBar;
+    private ImageView refresh;
     private TextView totalFood;
+    private TextView newOption,hotSaleOption;
     private RecyclerView mRecycleview;
     private List<FoodModel> mListFood;
     private SearchedItemAdapter searchedItemAdapter;
@@ -83,6 +94,7 @@ public class FoodCategoryFragment extends Fragment {
         try {
             context = getActivity();
             mFoodAppApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
+            cartManagerSqLite = new CartManagerSqLite(context);
         } catch (Exception exception) {
         }
         if (getArguments() != null) {
@@ -98,7 +110,12 @@ public class FoodCategoryFragment extends Fragment {
         RelativeLayout viewLayout = (RelativeLayout) inflater.inflate(R.layout.fragment_food_category, null);
         mRecycleview = viewLayout.findViewById(R.id.foodCategory);
         totalFood = viewLayout.findViewById(R.id.totalFoodCategoryActivity);
+        hotSaleOption=viewLayout.findViewById(R.id.hotSaleOption);
+        newOption=viewLayout.findViewById(R.id.newOption);
+        refresh=viewLayout.findViewById(R.id.refresh);
+        bottomBar=viewLayout.findViewById(R.id.bottom_bar);
         initFoodList();
+        handleClick();
         return viewLayout;
     }
     void initFoodList()
@@ -106,24 +123,35 @@ public class FoodCategoryFragment extends Fragment {
         searchedItemAdapter = new SearchedItemAdapter(mListFood, context, new IClickFoodItemListener() {
             @Override
             public void onItemClickHandler(FoodModel food) {
-                Intent intent=new Intent(context, DetailFoodActivity.class);
-                Bundle bundle =new Bundle();
-                bundle.putString("foodname",food.getName().toString());
-                bundle.putString("image",food.getImage().toString());
-                bundle.putString("description",food.getDescription());
-                bundle.putString("originalprice",String.valueOf(food.getPrice()));
-                bundle.putInt("sale",food.getDiscount());
-                bundle.putInt("quantitySold",food.getQuantity());
-                float currentPrice = food.getPrice() * (1 - (float)food.getDiscount() / 100);
-                bundle.putString("currentprice",String.valueOf(currentPrice));
+                Intent intent = new Intent(context, DetailFoodActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("foodname", food.getName().toString());
+                bundle.putString("image", food.getImage().toString());
+                bundle.putString("description", food.getDescription());
+                bundle.putString("originalprice", String.valueOf(food.getPrice()));
+                bundle.putInt("sale", food.getDiscount());
+                bundle.putInt("quantitySold", food.getQuantity());
+                float currentPrice = food.getPrice() * (1 - (float) food.getDiscount() / 100);
+                bundle.putString("currentprice", String.valueOf(currentPrice));
                 intent.putExtras(bundle);
                 startActivity(intent);
+            }
+        }, new IClickAddItemListener() {
+            @Override
+            public void onClick(FoodModel food) {
+                cartManagerSqLite.addCart(new ItemCartModel(food.getName(), 1
+                        , (int) food.getPrice(), food.getDiscount()
+                        , food.getImage()));
+                NotificationDialog notificationDialog=new NotificationDialog(context);
+                notificationDialog.setContent("Đã thêm vào giỏ hàng");
+                notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                notificationDialog.show();
             }
         });
         mRecycleview.setAdapter(searchedItemAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
         mRecycleview.setLayoutManager(linearLayoutManager);
-
+        mRecycleview.setOnTouchListener(new TranslateAnimationUtil(context,bottomBar));
         setData(foodType);
     }
 
@@ -171,6 +199,80 @@ public class FoodCategoryFragment extends Fragment {
         );
 
 
+    }
+
+    void handleClick()
+    {
+        hotSaleOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hotSaleOption.setTextColor(Color.RED);
+                newOption.setTextColor(Color.BLACK);
+                compositeDisposable.add(mFoodAppApi.filterFood("",foodType.toString() , "Bán chạy")
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                foodsReturned -> {
+                                    if (foodsReturned != null) {
+                                        searchedItemAdapter.setData(foodsReturned);
+                                        totalFood.setText(foodsReturned.size()+"");
+                                    }
+                                },
+                                error ->
+                                {
+                                    Log.d("Loi", error.getMessage());
+                                }
+                        )
+                );
+            }
+        });
+        newOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hotSaleOption.setTextColor(Color.BLACK);
+                newOption.setTextColor(Color.RED);
+                compositeDisposable.add(mFoodAppApi.filterFood("",foodType.toString() , "Mới nhất")
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                foodsReturned -> {
+                                    if (foodsReturned != null) {
+                                        searchedItemAdapter.setData(foodsReturned);
+                                        totalFood.setText(foodsReturned.size()+"");
+                                    }
+                                },
+                                error ->
+                                {
+                                    Log.d("Loi", error.getMessage());
+                                }
+                        )
+                );
+            }
+        });
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hotSaleOption.setTextColor(Color.BLACK);
+                newOption.setTextColor(Color.BLACK);
+                compositeDisposable.add(mFoodAppApi.getCategories(foodType.toString())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                allFood-> {
+                                    if (allFood != null) {
+                                        searchedItemAdapter.setData(allFood);
+                                        totalFood.setText(allFood.size()+"");
+                                    }
+                                },
+                                error ->
+                                {
+                                    Log.d("Loi", error.getMessage());
+                                }
+                        )
+                );
+            }
+        });
     }
 
 }

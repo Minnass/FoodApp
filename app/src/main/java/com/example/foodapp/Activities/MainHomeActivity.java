@@ -47,6 +47,7 @@ import com.example.foodapp.Util.TranslateAnimationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.foodapp.Util.InternetConnection;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +70,11 @@ public class MainHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_home);
+        getUserFromIntent();
         ft = getSupportFragmentManager().beginTransaction();
-        homeFragment= HomeFragment.newInstance();
-        favoriteFragment=FavoriteFragment.newInstance();
-        profileFragment=ProfileFragment.newInstance();
+        homeFragment = HomeFragment.newInstance();
+        favoriteFragment = FavoriteFragment.newInstance();
+        profileFragment = ProfileFragment.newInstance();
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.frameLayout, homeFragment);
         ft.commit();
@@ -81,7 +83,7 @@ public class MainHomeActivity extends AppCompatActivity {
 
     void initBottomNavigaion() {
         mBottomNavigationView = findViewById(R.id.bottom_nvg);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        mBottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -109,11 +111,14 @@ public class MainHomeActivity extends AppCompatActivity {
                         ft.commit();
                         break;
                     }
-
                 }
                 return true;
             }
         });
+}
+    void getUserFromIntent() {
+        Bundle bundle = getIntent().getExtras();
+        user = (UserModel) bundle.getSerializable("user");
     }
 
 }

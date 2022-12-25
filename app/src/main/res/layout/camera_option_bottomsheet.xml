@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <RelativeLayout  android:background="#DEEFEF"
+        android:padding="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Chọn ảnh từ"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/close_imgOption_bottomsheet"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/close" />
+    </RelativeLayout>
+
+    <LinearLayout
+
+     android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+     <LinearLayout
+         android:orientation="vertical"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+         <ImageView
+             android:layout_width="45dp"
+             android:id="@+id/camera"
+             android:src="@drawable/camera"
+             android:layout_height="45dp"/>
+         <TextView
+             android:layout_marginTop="10dp"
+             android:layout_width="wrap_content"
+             android:textSize="12dp"
+             android:textColor="@color/black"
+             android:text="Camera"
+             android:layout_height="wrap_content"/>
+     </LinearLayout>
+        <LinearLayout
+            android:gravity="center"
+            android:layout_marginLeft="15dp"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/picture"
+                android:layout_width="45dp"
+                android:id="@+id/gallery"
+                android:layout_height="45dp"/>
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:textSize="12dp"
+                android:textColor="@color/black"
+                android:text="Thư viện ảnh"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

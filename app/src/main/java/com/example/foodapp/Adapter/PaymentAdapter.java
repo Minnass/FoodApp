@@ -1,6 +1,7 @@
 package com.example.foodapp.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
 
     public void setData(ArrayList<ItemCartModel> list) {
         this.foodList = list;
+        Log.d("aa",foodList.size()+"");
         notifyDataSetChanged();
     }
 
@@ -54,7 +56,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
         holder.foodName.setText(food.getFoodName());
         holder.originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(food.getPrice()));
         float currentPrice = food.getPrice() * (1 - (float) food.getDiscount() / 100);
-        holder.sale.setText("Giảm " + String.valueOf(food.getDiscount()) + "%");
+        holder.sale.setText("Giảm "+food.getDiscount()+"%");
         holder.currentPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));
         holder.notionContainer.setVisibility(View.GONE);
         holder.quantity.setText("Số lượng: " + food.getQuantity());
@@ -90,7 +92,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
             originalPrice = itemView.findViewById(R.id.originalPrice_paymentItem);
             currentPrice = itemView.findViewById(R.id.currentPrice_paymentItem);
             sale = itemView.findViewById(R.id.sale_paymentItem);
-            finalTotalPrice = itemView.findViewById(R.id.totalPrice_paymentActivity);
+            finalTotalPrice = itemView.findViewById(R.id.totalPrice_itemPayment);
             quantity = itemView.findViewById(R.id.quantity_paymentItem);
             notion = itemView.findViewById(R.id.notion);
             notionContainer = itemView.findViewById(R.id.notion_container);

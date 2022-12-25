@@ -10,19 +10,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private static Retrofit instance;
-    public static  Retrofit getInstance(String baseUrl)
-    {
-        if(instance==null)
-        {
+
+    public static Retrofit getInstance(String baseUrl) {
+        if (instance == null) {
             Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
                     .setLenient()
                     .create();
-            instance=new Retrofit.Builder()
+            instance = new Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                     .build()
-                   ;
+            ;
         }
         return instance;
     }

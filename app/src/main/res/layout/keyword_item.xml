@@ -5,6 +5,7 @@
     android:textSize="12sp"
     android:gravity="center"
     android:id="@+id/keyword_text"
+    android:padding="5dp"
     android:textColor="@color/black"
     android:text="tim kiem"
     >

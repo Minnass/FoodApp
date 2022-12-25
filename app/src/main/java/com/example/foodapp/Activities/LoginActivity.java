@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.foodapp.Model.LoginModel.UserModel;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
@@ -56,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     ActivityResultLauncher<Intent> resultLauncher;
+    UserModel user;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

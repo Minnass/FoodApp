@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#4CAF50"
+        android:background="#F44336"
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
         android:text="Tài khoản"

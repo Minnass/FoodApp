@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
+    android:layout_width="280dp"
     android:layout_gravity="right"
     android:orientation="vertical"
-    android:layout_marginBottom="100dp"
-    android:background="#C9C5CD"
+    android:layout_marginBottom="30dp"
+    android:background="#FFFFFF"
     android:layout_height="match_parent">
     <LinearLayout
         android:orientation="vertical"
@@ -60,7 +60,7 @@
             android:horizontalSpacing="15dp"
             android:listSelector="#BDB7B7"
             android:numColumns="3"
-            android:verticalSpacing="5dp"
+            android:verticalSpacing="20dp"
             android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

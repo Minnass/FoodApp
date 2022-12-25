@@ -160,6 +160,11 @@ public class CartFragment extends Fragment {
                 cartManagerSqLite.deleteSomeItems(items);
                 setPrice();
             }
+
+            @Override
+            public void selectedItem(int index) {
+
+            }
         });
         foodListRCV.setAdapter(cartListAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);

@@ -4,11 +4,15 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,8 +27,10 @@ import com.example.foodapp.SQLite.AddressManagerSqLite;
 
 import java.util.List;
 
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
+
 public class AddressActivity extends AppCompatActivity {
-    private  final int REQUEST_CODE=999;
+    private final int REQUEST_CODE = 999;
     ImageView back;
     TextView add;
     RecyclerView addListRCV;
@@ -34,14 +40,45 @@ public class AddressActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> activityResultLauncher;
 
+    String type;
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            addressManagerSqLite.deleteItem(addressList.get(position));
+            addressList.remove(position);
+            addressAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(AddressActivity.this, c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addSwipeLeftBackgroundColor(Color.RED)
+                    .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24)
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address);
         mappingID();
         initAddressRCV();
-
         handleClick();
+        Bundle _bundle = getIntent().getExtras();
+        if (_bundle != null) {
+            type = _bundle.getString("type");
+        }
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
                 , new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -118,16 +155,21 @@ public class AddressActivity extends AppCompatActivity {
 
             @Override
             public void onChosingItemClick(int index) {
-                AddressModel temp=addressList.get(index);
-                addressList.set(index,addressList.get(0));
-                addressList.set(0,temp);
-                addressAdapter.notifyDataSetChanged();
-                sendBackAddressChosen(addressList.get(0));
+               if(!type.equals("view"))
+               {
+                   AddressModel temp = addressList.get(index);
+                   addressList.set(index, addressList.get(0));
+                   addressList.set(0, temp);
+                   addressAdapter.notifyDataSetChanged();
+                   sendBackAddressChosen(addressList.get(0));
+               }
             }
         });
         addListRCV.setAdapter(addressAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         addListRCV.setLayoutManager(linearLayoutManager);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(addListRCV);
     }
 
     private void HandleAddressSettingClick(int index) {
@@ -142,12 +184,19 @@ public class AddressActivity extends AppCompatActivity {
         intent.putExtras(bundle);
         activityResultLauncher.launch(intent);
     }
-    public void sendBackAddressChosen(AddressModel chosenAddress)
-    {
+
+    public void sendBackAddressChosen(AddressModel chosenAddress) {
         Intent intent = new Intent();
-        intent.putExtra("name", chosenAddress.getName());
-        intent.putExtra("phone", chosenAddress.getPhone());
-        intent.putExtra("address", chosenAddress.getAddress());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("chosenAddress", chosenAddress);
+        if (type.equals("init")) {
+            bundle.putString("type","init");
+        }
+        else
+        {
+            bundle.putString("type","setting");
+        }
+        intent.putExtras(bundle);
         setResult(REQUEST_CODE, intent);
         super.onBackPressed();
     }

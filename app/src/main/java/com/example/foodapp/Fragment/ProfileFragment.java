@@ -15,10 +15,12 @@ import android.widget.TextView;
 
 import com.example.foodapp.Activities.AddressActivity;
 import com.example.foodapp.Activities.CartActivity;
+import com.example.foodapp.Activities.CartHistoryActivity;
 import com.example.foodapp.Activities.ContactInformationActivity;
 import com.example.foodapp.Activities.EditProfileActivity;
 import com.example.foodapp.Activities.MainHomeActivity;
 import com.example.foodapp.Activities.SplashScreenActivity;
+import com.example.foodapp.Model.CartHistoryItemModel;
 import com.example.foodapp.R;
 
 /**
@@ -105,13 +107,17 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, AddressActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putString("type","view");
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
         cartHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Chuyen sang lich su mua hang
+               Intent intent=new Intent(context, CartHistoryActivity.class);
+               startActivity(intent);
             }
         });
         supportCenter.setOnClickListener(new View.OnClickListener() {

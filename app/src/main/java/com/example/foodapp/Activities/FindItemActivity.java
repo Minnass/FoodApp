@@ -22,6 +22,7 @@ import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
+import com.example.foodapp.SQLite.HistoryFindingSqLite;
 import com.example.foodapp.Util.InternetConnection;
 
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class FindItemActivity extends FragmentActivity {
     private FoodAppApi mFoodAppApi;
     List<FoodModel> result;
 
+    HistoryFindingSqLite historyFindingSqLite=new HistoryFindingSqLite(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,13 @@ public class FindItemActivity extends FragmentActivity {
         ft.replace(R.id.fragment_search, defaultSearchingFragment);
         ft.commit();
         intSearchingBox();
+        back=findViewById(R.id.back_SearchActivity);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     void intSearchingBox() {
@@ -83,14 +93,16 @@ public class FindItemActivity extends FragmentActivity {
         });
     }
 
-    void searchFoodName(String keyword) {
-
+    public void searchFoodName(String keyword) {
+        searchingBox.setText(keyword);
+        historyFindingSqLite.addKeyword(keyword);
+        returnedFoodsFragment.setKeyWord(keyword);
         compositeDisposable.add(mFoodAppApi.searchFood(keyword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         allFood -> {
-                            if(allFood.size()>0)
+                            if(allFood!=null)
                             {
                                 result=new ArrayList<>(allFood);
                                 returnedFoodsFragment.setData(result);
@@ -106,8 +118,28 @@ public class FindItemActivity extends FragmentActivity {
                 )
         );
     }
-
-
+    public  void searchCategory(String keyWord)
+    {
+        compositeDisposable.add(mFoodAppApi.getCategories(keyWord)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        allFood-> {
+                            if (allFood != null) {
+                                result=new ArrayList<>(allFood);
+                                returnedFoodsFragment.setData(result);
+                                ft = getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.fragment_search, returnedFoodsFragment);
+                                ft.commit();
+                            }
+                        },
+                        error ->
+                        {
+                            Log.d("Loi", error.getMessage());
+                        }
+                )
+        );
+    }
 
 
     @Override

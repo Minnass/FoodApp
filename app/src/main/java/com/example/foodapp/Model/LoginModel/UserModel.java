@@ -12,13 +12,33 @@ public class UserModel implements Serializable {
     private  String sex;
     private  String address;
     private  String email;
+    private int userID;
+    private String loginType;
 
-    public UserModel(String name, String dateOfBirth, String sex, String address, String email) {
+    public UserModel(String name, String dateOfBirth, String sex, String address, String email, int userID, String loginType) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.sex = sex;
         this.address = address;
         this.email = email;
+        this.userID = userID;
+        this.loginType = loginType;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public String getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
     }
 
     public String getEmail() {

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,7 @@ import com.example.foodapp.Retrofit.RetrofitClient;
 import com.example.foodapp.SQLite.FavoriteFoodManagerSqLite;
 import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.NotificationDialog;
 import com.example.foodapp.Util.TranslateAnimationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -57,12 +59,12 @@ public class HomeFragment extends Fragment {
     private MainHomeActivity mainHomeActivity;
 
 
-
     private ViewPager2 mViewpager2;
     private CircleIndicator3 mCircleIndicator3;
     private RecyclerView mRecyleviewCategory;
     private CategoryAdapter categoryAdapter;
 
+    private TextView userName;
     private EditText searchingItemEdit;
 
     private RecyclerView mRecyleviewPopular;
@@ -80,7 +82,7 @@ public class HomeFragment extends Fragment {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private FoodAppApi mFoodAppApi;
 
-    FavoriteFoodManagerSqLite favoriteFoodManagerSqLite=new FavoriteFoodManagerSqLite(context);
+    FavoriteFoodManagerSqLite favoriteFoodManagerSqLite;
 
 
     public HomeFragment() {
@@ -100,6 +102,7 @@ public class HomeFragment extends Fragment {
         try {
             context = getActivity();
             mainHomeActivity = (MainHomeActivity) getActivity();
+            favoriteFoodManagerSqLite=new FavoriteFoodManagerSqLite(context);
         } catch (IllegalStateException e) {
             throw new IllegalStateException("MainActivity must implement callbacks");
         }
@@ -110,6 +113,8 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         LinearLayout view_layout_returnedFood = (LinearLayout) inflater.inflate(R.layout.home_fragment, null);
         mFoodAppApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
+        userName=view_layout_returnedFood.findViewById(R.id.name);
+        userName.setText(MainHomeActivity.user.getName());
         initImageSlider(view_layout_returnedFood);
         initCategory(view_layout_returnedFood);
         initPolularFood(view_layout_returnedFood);
@@ -118,21 +123,31 @@ public class HomeFragment extends Fragment {
         return view_layout_returnedFood;
     }
 
-    void initSearchingFood(LinearLayout viewGroup)
-  {
-        searchingItemEdit=viewGroup.findViewById(R.id.seach_item);
+    void initSearchingFood(LinearLayout viewGroup) {
+        searchingItemEdit = viewGroup.findViewById(R.id.seach_item);
         searchingItemEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context, FindItemActivity.class);
+                Intent intent = new Intent(context, FindItemActivity.class);
                 startActivity(intent);
+            }
+        });
+        searchingItemEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                {
+                    Intent intent=new Intent(context,FindItemActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
     }
+
     void initImageSlider(LinearLayout viewGroup) {
-        mViewpager2 =  viewGroup.findViewById(R.id.view_paper2);
-        mCircleIndicator3 =  viewGroup.findViewById(R.id.circle_indicator3);
+        mViewpager2 = viewGroup.findViewById(R.id.view_paper2);
+        mCircleIndicator3 = viewGroup.findViewById(R.id.circle_indicator3);
         mPhotoList = new ArrayList<Photo>();
         mPhotoList.add(new Photo(R.drawable.anh01));
         mPhotoList.add(new Photo(R.drawable.anh02));
@@ -230,10 +245,6 @@ public class HomeFragment extends Fragment {
     }
 
 
-
-
-
-
     void initPolularFood(LinearLayout viewGroup) {
         mRecyleviewPopular = viewGroup.findViewById(R.id.rcv_popular);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false);
@@ -258,7 +269,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClickHandler(FoodModel foodModel) {
                 favoriteFoodManagerSqLite.addFavoriteFood(foodModel);
-                //Xuat dialog da them vao do hang
+                NotificationDialog notificationDialog = new NotificationDialog(context);
+                notificationDialog.setContent("Đã thêm vào mục yêu thích");
+                notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                notificationDialog.show();
             }
         });
         mRecyleviewPopular.setAdapter(mPopularAdapter);

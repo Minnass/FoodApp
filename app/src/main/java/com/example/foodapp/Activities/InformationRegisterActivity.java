@@ -12,6 +12,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.foodapp.Model.LoginModel.UserModel;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
@@ -32,13 +33,16 @@ public class InformationRegisterActivity extends AppCompatActivity {
     TextInputLayout nameLayout, dateLayout, sexLayout, addressLayout;
     TextInputEditText name, dateOfbirth, sex, address;
 
-    FoodAppApi mFoodappApi;
+    FoodAppApi mFoodappApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    String userName,passWord,email;
+    UserModel user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information_register);
+
         mappingID();
         handleSubmitButton();
         chooseCalendar();
@@ -49,7 +53,14 @@ public class InformationRegisterActivity extends AppCompatActivity {
             }
         });
     }
-
+    void getDataFromIntent()
+    {
+        Bundle bundle=new Bundle();
+        bundle=getIntent().getExtras();
+        userName=bundle.getString("userName");
+        passWord=bundle.getString("passWord");
+        email=bundle.getString("email");
+    }
     void mappingID() {
         backRegister = findViewById(R.id.back_infoActivity);
         nameLayout = findViewById(R.id.textlayou1_infoAcitivy);
@@ -72,7 +83,7 @@ public class InformationRegisterActivity extends AppCompatActivity {
                 int date = calendar.get(Calendar.DATE);
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(InformationRegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(InformationRegisterActivity.this,R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         calendar.set(year, month, dayOfMonth);
@@ -93,7 +104,7 @@ public class InformationRegisterActivity extends AppCompatActivity {
                 if (!checkValidInput()) {
                     return;
                 }
-                sendPersonalInfoToServer(name.getText().toString(), dateOfbirth.getText().toString(),
+                sendPersonalInfoToServer(email,name.getText().toString(), dateOfbirth.getText().toString(),
                         sex.getText().toString(), address.getText().toString()
                 );
             }
@@ -128,9 +139,9 @@ public class InformationRegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    void sendPersonalInfoToServer(String name, String dateOfBirth, String sex, String address) {
-        mFoodappApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
-        compositeDisposable.add(mFoodappApi.sendPersonalInfo(name, dateOfBirth, sex, address)
+    void sendPersonalInfoToServer(String email,String name, String dateOfBirth, String sex, String address) {
+
+        compositeDisposable.add(mFoodappApi.sendPersonalInfo(email,name, dateOfBirth, sex, address)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -138,6 +149,7 @@ public class InformationRegisterActivity extends AppCompatActivity {
                             if (object) {
                                 submitBtn.setVisibility(View.GONE);
                                 goTonextBtn.setVisibility(View.VISIBLE);
+                                login();
                                 goTonextBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -155,7 +167,33 @@ public class InformationRegisterActivity extends AppCompatActivity {
 
     void navigatateMainActivity() {
         Intent intent = new Intent(InformationRegisterActivity.this, MainHomeActivity.class);
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("user",user);
         startActivity(intent);
         finish();
+    }
+    void login()
+    {
+        compositeDisposable.add(mFoodappApi.checkLogin(userName,passWord)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        object -> {
+                            if (object.isSuccess()) {
+                                submitBtn.setVisibility(View.GONE);
+                                goTonextBtn.setVisibility(View.VISIBLE);
+                                goTonextBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                      user=object.getUser();
+                                    }
+                                });
+                            }
+                        },
+                        error -> {
+                            Log.d("Loi", error.getMessage());
+                        }
+                )
+        );
     }
 }

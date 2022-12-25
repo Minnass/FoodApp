@@ -3,13 +3,13 @@ package com.example.foodapp.Model;
 public class SaleCodeModel {
     String code;
     String codeName;
-    int saleValue;
+    int discountValue;
 
 
     public SaleCodeModel(String code, String codeName, int saleValue, Boolean successful) {
         this.code = code;
         this.codeName = codeName;
-        this.saleValue = saleValue;
+        this.discountValue = saleValue;
 
     }
 
@@ -32,10 +32,10 @@ public class SaleCodeModel {
     }
 
     public int getSaleValue() {
-        return saleValue;
+        return discountValue;
     }
 
     public void setSaleValue(int saleValue) {
-        this.saleValue = saleValue;
+        this.discountValue = saleValue;
     }
 }

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.foodapp.Adapter.DeliveryAdapter;
 import com.example.foodapp.Model.DeliveryModel;
@@ -65,6 +66,7 @@ public class DeliveryFormActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("selectedDelivery", deliveryAdapter.getSelectedItem());
+                intent.putExtras(bundle);
                 setResult(REQUEST_CODE, intent);
                 finish();
             }

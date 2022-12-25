@@ -73,14 +73,14 @@
                 android:background="#FFFFFF"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:gravity="center_vertical"
                     android:padding="10dp">
 
                     <ImageView
+                        android:id="@+id/im"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:src="@drawable/ic_baseline_location_on_24" />
@@ -89,6 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/im"
                         android:text="Giao đến"
                         android:textColor="@color/black"
                         android:textSize="15dp" />
@@ -97,16 +98,18 @@
                         android:id="@+id/noChoice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:layout_marginLeft="10dp"
-                        android:layout_weight="1"
                         android:text="Chưa chọn"
                         android:textColor="#8C8888"
                         android:textSize="14dp" />
 
                     <LinearLayout
+                        android:layout_marginRight="5dp"
                         android:id="@+id/addLocation_paymentActivity"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -124,39 +127,38 @@
                             android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
                     </LinearLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
+                    android:orientation="horizontal"
                     android:id="@+id/locationContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/bg_blue_textview"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="20dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="15dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="15dp"
+                    android:layout_marginBottom="10dp"
                    >
-
                     <ImageView
                         android:layout_width="45dp"
                         android:layout_height="45dp"
-                        android:layout_weight="0"
                         android:src="@drawable/location" />
 
                     <LinearLayout
-
+                        android:layout_weight="1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_weight="0.3"
                         android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
-
                             <TextView
                                 android:id="@+id/userName_paymentActivity"
                                 android:layout_width="wrap_content"
@@ -165,7 +167,6 @@
                                 android:textColor="@color/black"
                                 android:textSize="17dp"
                                 android:textStyle="bold" />
-
                             <TextView
                                 android:id="@+id/phoneNumber_payment"
                                 android:layout_width="wrap_content"
@@ -175,33 +176,21 @@
                                 android:textColor="@color/black"
                                 android:textSize="15dp" />
                         </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/address_paymentActivity"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="10"
-                            android:gravity="center">
-
-                            <TextView
-                                android:id="@+id/address_paymentActivity"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:layout_weight="8"
-                                android:text="xóm 5, làng triều thủy, xã phú an ,huyện phú vang, tỉnh thừa thiên huế"
-                                android:textColor="@color/black"
-                                android:textSize="15dp" />
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="top"
-                                android:layout_weight="3"
-                                android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
-                        </LinearLayout>
+                            android:layout_marginRight="10dp"
+                            android:text="xóm 5, làng triều thủy, xã phú an ,huyện phú vang, tỉnh thừa thiên huế"
+                            android:textColor="@color/black"
+                            android:textSize="15dp" />
                     </LinearLayout>
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
 
+                        android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
                 </LinearLayout>
 
                 <TextView
@@ -252,7 +241,7 @@
                         android:textColor="#2196F3" />
 
                     <LinearLayout
-
+                        android:layout_marginRight="5dp"
                         android:id="@+id/dileveryTime_changing"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -381,6 +370,7 @@
                         </RelativeLayout>
 
                         <TextView
+                            android:visibility="gone"
                             android:id="@+id/saleCode_result"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -493,10 +483,10 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_marginBottom="55dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="55dp">
 
                         <TextView
                             android:layout_width="wrap_content"

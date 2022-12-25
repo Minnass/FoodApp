@@ -1,6 +1,8 @@
 package com.example.foodapp.Model.SQLiteModel;
 
-public class AddressModel {
+import java.io.Serializable;
+
+public class AddressModel implements Serializable {
     String name;
     String phone;
     String address;
