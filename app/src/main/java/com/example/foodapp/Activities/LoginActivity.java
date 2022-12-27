@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +18,10 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +30,8 @@ import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
 import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.NotificationDialog;
+import com.github.ybq.android.spinkit.style.FadingCircle;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -51,13 +57,14 @@ public class LoginActivity extends AppCompatActivity {
     LinearLayout google, gmail;
 
 
-    FoodAppApi mFoodappApi;
+    FoodAppApi mFoodappApi= RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     ActivityResultLauncher<Intent> resultLauncher;
-    UserModel user;
+
+    Dialog forgotPasswordDialog;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         navigateSignUp();
         HandleLoginButtonClick();
         HandleGoogleSignin();
-
+        handleForgotPassword();
     }
 
     private void mappingID() {
@@ -80,6 +87,46 @@ public class LoginActivity extends AppCompatActivity {
         signUpButton = findViewById(R.id.signuo_LoginActivity);
         google = findViewById(R.id.Google);
         gmail = findViewById(R.id.gmail);
+    }
+
+    void handleForgotPassword()
+    {
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forgotPasswordDialog = new Dialog(LoginActivity.this);
+                forgotPasswordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                forgotPasswordDialog.setContentView(R.layout.forgot_password_layout);
+                Window window = forgotPasswordDialog.getWindow();
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                TextView sentBtn=forgotPasswordDialog.findViewById(R.id.sendBtn);
+                TextView cancelBtn=forgotPasswordDialog.findViewById(R.id.cancelBtn);
+                TextView _error=forgotPasswordDialog.findViewById(R.id.error_forgotPass);
+                TextInputLayout layout=forgotPasswordDialog.findViewById(R.id.emailLayout_forgotPass);
+                TextInputEditText _email=forgotPasswordDialog.findViewById(R.id.email_forgotPassword);
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        forgotPasswordDialog.dismiss();
+                    }
+                });
+                sentBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (_email.getText().toString().equals("")) {
+                            layout.setHelperText("Required*");
+                            layout.setBoxBackgroundColor(Color.RED);
+                            layout.setHelperTextEnabled(true);
+                        }
+                        else
+                        {
+                            sendPasswordToEmail(_email.getText().toString(),_error,forgotPasswordDialog);
+                        }
+                    }
+                });
+                forgotPasswordDialog.show();
+            }
+        });
     }
 
     void navigateSignUp() {
@@ -123,9 +170,33 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+    void sendPasswordToEmail(String email,TextView _errorMessage,Dialog dialog)
+    {
+        compositeDisposable.add(mFoodappApi.getForgotPassword(email)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                       success -> {
+                            if (success) {
+                                dialog.dismiss();
+                                NotificationDialog notificationDialog=new NotificationDialog(this);
+                                notificationDialog.setContent("Mật khẩu đã gửi về email.");
+                                notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                                notificationDialog.show();
+                            } else {
+                                _errorMessage.setText("Email không tồn tại");
+                                _errorMessage.setVisibility(View.VISIBLE);
+                            }
+                        },
+                        error -> {
+                            Log.d("Loi", error.getMessage());
+                        }
+                )
+        );
+    }
 
     void checkValidUser() {
-        mFoodappApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
+
         compositeDisposable.add(mFoodappApi.checkLogin(userName.getText().toString(), passWord.getText().toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

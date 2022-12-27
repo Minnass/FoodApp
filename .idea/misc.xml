@@ -67,6 +67,7 @@
         <entry key="..\:/FoodApp/app/src/main/res/drawable/work.xml" value="0.121" />
         <entry key="..\:/FoodApp/app/src/main/res/font/acme.xml" value="0.2111111111111111" />
         <entry key="..\:/FoodApp/app/src/main/res/font/aladin.xml" value="0.2111111111111111" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/a.xml" value="0.18333333333333332" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_address.xml" value="0.184375" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_cart.xml" value="0.16666666666666666" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_cart_history.xml" value="0.16666666666666666" />
@@ -77,12 +78,12 @@
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_edit_profile.xml" value="0.184375" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_find_item.xml" value="0.22" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_food_catetory.xml" value="0.1703125" />
-        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_history_order_detail.xml" value="0.184375" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_history_order_detail.xml" value="0.22" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_information_register.xml" value="0.184375" />
-        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_login.xml" value="0.16666666666666666" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_main_home.xml" value="0.13333333333333333" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_payment.xml" value="0.184375" />
-        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_register.xml" value="0.184375" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/activity_register.xml" value="0.14666666666666667" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_splash_screen.xml" value="0.1" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_test.xml" value="0.184375" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/activity_test1.xml" value="0.184375" />
@@ -100,6 +101,7 @@
         <entry key="..\:/FoodApp/app/src/main/res/layout/favorite_item.xml" value="0.22" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/filter_dialog.xml" value="0.14666666666666667" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/food_item.xml" value="0.3333333333333333" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/forgot_password_layout.xml" value="0.16666666666666666" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/fragment_blank.xml" value="0.10208333333333333" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/fragment_cart.xml" value="0.184375" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/fragment_favorite.xml" value="0.16666666666666666" />
@@ -114,6 +116,7 @@
         <entry key="..\:/FoodApp/app/src/main/res/layout/keyword_item.xml" value="0.18333333333333332" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/notification_dialog.xml" value="0.22" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/payment_item.xml" value="0.22" />
+        <entry key="..\:/FoodApp/app/src/main/res/layout/processing_layout.xml" value="0.18333333333333332" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/returned_food.xml" value="0.16666666666666666" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/searched_item.xml" value="0.22" />
         <entry key="..\:/FoodApp/app/src/main/res/layout/setting_address_bottomsheet_dialog.xml" value="0.184375" />

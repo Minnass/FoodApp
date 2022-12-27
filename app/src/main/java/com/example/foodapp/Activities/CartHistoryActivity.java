@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.foodapp.Adapter.CartHistoryAdapter;
 import com.example.foodapp.Iterface.ICLickHistoryCartItemListener;
@@ -20,6 +22,7 @@ import com.example.foodapp.Model.CartHistoryItemModel;
 import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
+import com.example.foodapp.Util.ConverterDateString;
 import com.example.foodapp.Util.InternetConnection;
 
 import java.text.SimpleDateFormat;
@@ -67,10 +70,8 @@ public class CartHistoryActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String currentDate = simpleDateFormat.format(calendar.getTime());
-        calendar.add(Calendar.DATE, 7);
-        String nextDate = simpleDateFormat.format(calendar.getTime());
         fromDate.setText(currentDate);
-        toDate.setText(nextDate);
+        toDate.setText(currentDate);
     }
 
     void handleClick() {
@@ -81,7 +82,7 @@ public class CartHistoryActivity extends AppCompatActivity {
         fromDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CartHistoryActivity.this, R.style.DialogTheme,new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(CartHistoryActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         calendar.set(year, month, dayOfMonth);
@@ -95,7 +96,7 @@ public class CartHistoryActivity extends AppCompatActivity {
         toDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CartHistoryActivity.this, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(CartHistoryActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         calendar.set(year, month, dayOfMonth);
@@ -103,8 +104,8 @@ public class CartHistoryActivity extends AppCompatActivity {
                         toDate.setText(simpleDateFormat.format(calendar.getTime()));
                     }
                 }, year, month, date + 7);
-
                 datePickerDialog.show();
+
             }
         });
 
@@ -113,7 +114,7 @@ public class CartHistoryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String startDate = fromDate.getText().toString();
                 String endDate = toDate.getText().toString();
-                getHistoryOrder(startDate,endDate);
+                getHistoryOrder(ConverterDateString.getConvertedDate(startDate),ConverterDateString.getConvertedDate(endDate));
                 resultContainer.setVisibility(View.VISIBLE);
             }
         });
@@ -133,6 +134,8 @@ public class CartHistoryActivity extends AppCompatActivity {
                  Intent intent=new Intent(CartHistoryActivity.this,HistoryOrderDetailActivity.class);
                  Bundle bundle=new Bundle();
                  bundle.putSerializable("historyOrder",item);
+                 intent.putExtras(bundle);
+                 startActivity(intent);
              }
         });
         historyListRCV.setAdapter(cartHistoryAdapter);
@@ -141,7 +144,7 @@ public class CartHistoryActivity extends AppCompatActivity {
     }
 
     void getHistoryOrder(String startDate,String endDate) {
-        compositeDisposable.add(mFoodAppApi.getHistoryOrders(startDate,endDate)
+        compositeDisposable.add(mFoodAppApi.getHistoryOrders(MainHomeActivity.user.getUserID(),startDate,endDate)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

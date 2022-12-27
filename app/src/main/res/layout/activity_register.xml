@@ -53,7 +53,7 @@
         android:padding="20dp">
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Username"
@@ -61,7 +61,6 @@
             app:counterEnabled="true"
             app:counterMaxLength="30"
             app:endIconMode="clear_text"
-
             app:startIconDrawable="@drawable/ic_baseline_person_243">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -74,13 +73,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
             android:id="@+id/textlayou2"
-            app:counterEnabled="true"
-            app:counterMaxLength="50"
             app:endIconMode="clear_text"
             app:startIconDrawable="@drawable/ic_baseline_local_post_office_24">
 
@@ -88,48 +85,47 @@
                 android:id="@+id/email_RegisterActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:background="@color/white"
-                android:maxLength="51" />
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/textLayout3"
+            style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
-            app:counterEnabled="true"
-            app:counterMaxLength="30"
-            android:id="@+id/textLayout3"
-            app:endIconMode="clear_text"
-            app:endIconCheckable="true"
-            app:startIconDrawable="@drawable/ic_baseline_lock_24">
+            android:layout_marginTop="15dp"
+            app:passwordToggleEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_lock_lock">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_RegisterActivity"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/white"
-                android:maxLength="31" />
+                android:inputType="textPassword"
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/textLayout4"
+            style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Verify"
-            app:counterEnabled="true"
-            app:counterMaxLength="30"
-            android:id="@+id/textLayout4"
-            app:endIconCheckable="true"
-            app:endIconMode="clear_text"
-            app:startIconDrawable="@drawable/ic_baseline_lock_24">
-
+            app:passwordToggleEnabled="true"
+            app:startIconDrawable="@android:drawable/ic_lock_lock"
+            android:layout_marginTop="15dp"
+           >
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/verification_RegisterActivity"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@color/white"
-                android:maxLength="31" />
+                android:inputType="textPassword"
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
         <TextView
             android:id="@+id/error_RegisterActivity"

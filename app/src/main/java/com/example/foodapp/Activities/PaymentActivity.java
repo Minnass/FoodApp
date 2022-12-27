@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,9 +20,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,13 +45,13 @@ import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.NotificationDialog;
 import com.example.foodapp.Util.RandomIdUtils;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
+import com.github.ybq.android.spinkit.style.FadingCircle;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,12 +80,16 @@ public class PaymentActivity extends AppCompatActivity {
     private SaleCodeModel saleCodeModel;
     private DeliveryModel deliveryModel;
     private AddressModel addressModel;
-    private String time;
+    private String _time;
     private CartManagerSqLite cartManagerSqLite = new CartManagerSqLite(this);
     private FoodAppApi mFoodAppAPi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     ActivityResultLauncher<Intent> addingAddressActivityResultLauncher;
     ActivityResultLauncher<Intent> SelectedDeliveryTypeLauncher;
+
+
+    int counter=0;
+     Dialog ProcessingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +102,10 @@ public class PaymentActivity extends AppCompatActivity {
         initFoodListRecycleView();
         HandleAddAdressButton();
         handleDeliveryType();
-//        handleDeliveryTime();
+        handleDeliveryTime();
         handleCheckValidSaleCode();
         handleButton();
+        initProcessingDialog();
     }
 
 
@@ -174,6 +182,17 @@ public class PaymentActivity extends AppCompatActivity {
         deliveryTime = findViewById(R.id.deliveryTime);
         changingDeliveryButton = findViewById(R.id.dileveryTime_changing);
     }
+    void initProcessingDialog()
+    {
+        ProcessingDialog = new Dialog(this);
+        ProcessingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        ProcessingDialog.setContentView(R.layout.processing_layout);
+        ProgressBar progressBar=ProcessingDialog.findViewById(R.id.processingProgressbar);
+       FadingCircle fadingCircle= new FadingCircle();
+       fadingCircle.setColor(Color.LTGRAY);
+        progressBar.setIndeterminateDrawable(fadingCircle);
+
+    }
 
     void initFoodListRecycleView() {
         paymentAdapter = new PaymentAdapter(foodList, this, new IClickItemCartListener() {
@@ -199,7 +218,7 @@ public class PaymentActivity extends AppCompatActivity {
     float countTotalProductPrice() {
         float _totalProductPrice = 0;
         for (int i = 0; i < foodList.size(); i++) {
-            _totalProductPrice += foodList.get(i).getPrice() * foodList.get(i).getQuantity();
+            _totalProductPrice += foodList.get(i).getPrice() * (1 - (float)foodList.get(i).getDiscount() / 100) * foodList.get(i).getQuantity();
         }
         return _totalProductPrice;
     }
@@ -224,18 +243,20 @@ public class PaymentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkFullInformation()) {
+                    ProcessingDialog.show();
                     sendToServer();
                 } else {
                     NotificationDialog notificationDialog = new NotificationDialog(PaymentActivity.this);
                     notificationDialog.setContent("Vui lòng nhập đầy đủ thông tin!");
                     notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_warning_24);
+                    notificationDialog.show();
                 }
             }
         });
     }
 
     Boolean checkFullInformation() {
-        if (addressModel == null || deliveryModel == null || time.equals("")) {
+        if (addressModel == null || deliveryModel == null ||_time==null){
             return false;
         }
         return true;
@@ -321,7 +342,50 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
     }
+    void getNotionContent(TextView textview) {
+        View view = getLayoutInflater().inflate(R.layout.adding_notion_sheet, null);
 
+        final BottomSheetDialog _bottomSheetDialog = new BottomSheetDialog(this);
+        _bottomSheetDialog.setContentView(view);
+        _bottomSheetDialog.show();
+        TextView cancelButton = view.findViewById(R.id.cancle_notionSheet);
+        TextView doneButton = view.findViewById(R.id.done_notionSheet);
+        EditText notionEditText = view.findViewById(R.id.notion_content);
+        TextView textCounter = view.findViewById(R.id.textCounter);
+        notionEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int length = notionEditText.length();
+                String convert = String.valueOf(length);
+                textCounter.setText(convert + "/100");
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _bottomSheetDialog.dismiss();
+            }
+        });
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!notionEditText.getText().toString().equals("")) {
+                    textview.setText(notionEditText.getText().toString());
+                }
+            }
+        });
+    }
     void handleDeliveryTime() {
         changingDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -343,10 +407,10 @@ public class PaymentActivity extends AppCompatActivity {
         DateTimePickerView dateTimePickerView = new DateTimePickerView.Builder(this, new DateTimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//callback
-                SimpleDateFormat VietNameseFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                SimpleDateFormat VietNameseFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                 SimpleDateFormat generalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 deliveryTime.setText(VietNameseFormat.format(date));
-                time = generalFormat.format(date);
+                _time = generalFormat.format(date);
             }
         })
                 .setType(new boolean[]{false, true, true, true, true, false})   // year-month-day-hour-min-sec
@@ -360,9 +424,11 @@ public class PaymentActivity extends AppCompatActivity {
                 .setTitleColor(Color.BLUE)
                 .setSubmitColor(Color.BLACK)
                 .setCancelColor(Color.BLACK)
+                .isCenterLabel(false)
                 .setSubCalSize(10)
                 .setRangDate(startDate, endDate)
                 .build();
+        dateTimePickerView.show();
     }
 
 
@@ -437,50 +503,7 @@ public class PaymentActivity extends AppCompatActivity {
         });
     }
 
-    void getNotionContent(TextView textview) {
-        View view = getLayoutInflater().inflate(R.layout.adding_notion_sheet, null);
 
-        final BottomSheetDialog _bottomSheetDialog = new BottomSheetDialog(this);
-        _bottomSheetDialog.setContentView(view);
-        _bottomSheetDialog.show();
-        TextView cancelButton = view.findViewById(R.id.cancle_notionSheet);
-        TextView doneButton = view.findViewById(R.id.done_notionSheet);
-        EditText notionEditText = view.findViewById(R.id.notion_content);
-        TextView textCounter = view.findViewById(R.id.textCounter);
-        notionEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int length = notionEditText.length();
-                String convert = String.valueOf(length);
-                textCounter.setText(convert + "/100");
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _bottomSheetDialog.dismiss();
-            }
-        });
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!notionEditText.getText().toString().equals("")) {
-                    textview.setText(notionEditText.getText().toString());
-                }
-            }
-        });
-    }
 
     void HandleAddAdressButton() {
         addNewAddressBtn.setOnClickListener(new View.OnClickListener() {
@@ -509,7 +532,7 @@ public class PaymentActivity extends AppCompatActivity {
     void sendToServer() {
         String orderCode = RandomIdUtils.createId();
         compositeDisposable.add(mFoodAppAPi.addHistoryOrder(MainHomeActivity.user.getUserID(), orderCode,
-                                time, Float.parseFloat(finalTotalPrice.getText().toString()),
+                                _time, countTotalProductPrice(),
                                 receivedPerson.getText().toString(),
                                 phoneNumber.getText().toString(),
                                 address.getText().toString(),
@@ -522,12 +545,7 @@ public class PaymentActivity extends AppCompatActivity {
                         .subscribe(
                                 action -> {
                                     if (action) {
-                                        NotificationDialog notificationDialog = new NotificationDialog(PaymentActivity.this);
-                                        notificationDialog.setContent("Đặt hàng thành công");
-                                        notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
-                                        cartManagerSqLite.deleteALl();
-                                        notificationDialog.show();
-                                        finish();
+                                        cartManagerSqLite.deleteSomeItems(foodList);
                                     }
                                 },
                                 error -> {
@@ -547,6 +565,15 @@ public class PaymentActivity extends AppCompatActivity {
                 .subscribe(
                         action -> {
                             if (action) {
+                                counter++;
+                                if(counter==foodList.size())
+                                {
+                                    ProcessingDialog.dismiss();
+                                    NotificationDialog notificationDialog = new NotificationDialog(PaymentActivity.this);
+                                    notificationDialog.setContent("Đặt hàng thành công");
+                                    notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
+                                    notificationDialog.show();
+                                }
                             }
                         },
                         error -> {

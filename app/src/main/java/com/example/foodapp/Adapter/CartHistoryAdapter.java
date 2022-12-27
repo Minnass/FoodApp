@@ -14,6 +14,7 @@ import com.example.foodapp.Model.CartHistoryItemModel;
 import com.example.foodapp.R;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class CartHistoryAdapter extends RecyclerView.Adapter<CartHistoryAdapter.HisttoryViewHolder> {
@@ -46,8 +47,10 @@ public class CartHistoryAdapter extends RecyclerView.Adapter<CartHistoryAdapter.
             return;
         }
         holder.orderCode.setText(item.getOrderCode());
-//        holder.orderDate.setText(item.getOrderDate());
-        holder.totalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(item.getTotalPrice()));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+        holder.orderDate.setText(simpleDateFormat.format(item.getOrderDate()));
+        float _totalPrice=item.getTotalPrice()+item.getDeliveryFee()-item.getSaleCode();
+        holder.totalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_totalPrice));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

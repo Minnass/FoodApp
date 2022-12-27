@@ -3,12 +3,9 @@ package com.example.foodapp.Util;
 import android.util.Log;
 
 public class ConverterDateString {
-    String date;
 
-    public ConverterDateString(String date) {
-        this.date = date;
-    }
-    public String getConvertedDate()
+
+    public static String getConvertedDate(String date)
     {
         String[] subString= date.split("/");
         StringBuffer stringBuffer=new StringBuffer();

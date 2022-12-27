@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,7 +56,7 @@ public class HistoryOrderAdapter extends RecyclerView.Adapter<HistoryOrderAdapte
         float currentPrice = item.getPrice() * (1 - (float) item.getDiscount() / 100);
         float _totalPrice=currentPrice*item.getQuantity();
         holder.price.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_totalPrice));
-        holder.quantity.setText(String.valueOf(item.getQuantity()));
+        holder.quantity.setText("Số lượng:"+String.valueOf(item.getQuantity()));
     }
 
     @Override

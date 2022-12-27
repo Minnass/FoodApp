@@ -44,7 +44,7 @@ public class HistoryOrderDetailActivity extends AppCompatActivity {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private FoodAppApi mFoodAppApi= RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
 
-    private CartHistoryItemModel cartHistoryItemModel;
+    private CartHistoryItemModel item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,24 +70,30 @@ public class HistoryOrderDetailActivity extends AppCompatActivity {
         saleCode = findViewById(R.id.saleCode_historyOrder);
         finalPrice = findViewById(R.id.finalPrice_historyOrder);
         paymentType = findViewById(R.id.paymentForm_historyOrder);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
     void initView()
-    {
+      {
         Bundle bundle=getIntent().getExtras();
-        cartHistoryItemModel= (CartHistoryItemModel) bundle.getSerializable("historyOrder");
-        receivedUser.setText(cartHistoryItemModel.getReceivedUser());
-        phoneNumber.setText(cartHistoryItemModel.getPhoneNumber());
-        address.setText(cartHistoryItemModel.getAddress());
+         item= (CartHistoryItemModel) bundle.getSerializable("historyOrder");
+        receivedUser.setText(item.getReceivedUser());
+        phoneNumber.setText(item.getPhoneNumber());
+        address.setText(item.getAddress());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"  );
-        orderTime.setText(simpleDateFormat.format(cartHistoryItemModel.getOrderDate()));
-        deliveryType.setText(cartHistoryItemModel.getDeliveryType());
-        orderCode.setText(cartHistoryItemModel.getOrderCode());
-        totalProductPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(cartHistoryItemModel.getTotalPrice()));
-        deliveryFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(cartHistoryItemModel.getDeliveryFee()));
-        saleCode.setText(VietNameseCurrencyFormat.getVietNameseCurrency(cartHistoryItemModel.getSaleCode()));
-        float _finalPrice=cartHistoryItemModel.getTotalPrice()+cartHistoryItemModel.getDeliveryFee()-cartHistoryItemModel.getSaleCode();
+        orderTime.setText(simpleDateFormat.format(item.getOrderDate()));
+        deliveryType.setText(item.getDeliveryType());
+        orderCode.setText(item.getOrderCode());
+        totalProductPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(item.getTotalPrice()));
+        deliveryFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(item.getDeliveryFee()));
+        saleCode.setText(VietNameseCurrencyFormat.getVietNameseCurrency(item.getSaleCode()));
+        float _finalPrice=item.getTotalPrice()+item.getDeliveryFee()-item.getSaleCode();
         finalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_finalPrice));
-        paymentType.setText(cartHistoryItemModel.getPaymentType());
+        paymentType.setText(item.getPaymentType());
     }
 
 
@@ -100,7 +106,7 @@ public class HistoryOrderDetailActivity extends AppCompatActivity {
     }
 
     void getData() {
-        String _orderCode=cartHistoryItemModel.getOrderCode();
+        String _orderCode=item.getOrderCode();
         compositeDisposable.add(mFoodAppApi.getHistoryOrderedFoodList(_orderCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -110,6 +116,7 @@ public class HistoryOrderDetailActivity extends AppCompatActivity {
                             {
                                 foodList=foodListReturned;
                                 historyOrderAdapter.setData(foodList);
+                                totalProduct.setText(String.valueOf(foodListReturned.size()));
                             }
                         },
                         error ->
@@ -120,13 +127,5 @@ public class HistoryOrderDetailActivity extends AppCompatActivity {
         );
 
     }
-    void handleClick()
-    {
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
+
 }

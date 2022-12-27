@@ -186,12 +186,14 @@ public class EditProfileActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         checkPermission();
+                        bottomSheetDialog.dismiss();
                     }
                 });
                 gallery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         galleryLauncher.launch("image/*");
+                        bottomSheetDialog.dismiss();
                     }
                 });
             }

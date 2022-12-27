@@ -141,7 +141,7 @@ public class CartActivity extends AppCompatActivity {
                     totalProduct=0;
                     numberOfSelection.setText("(0)");
                     NotificationDialog dialog=new NotificationDialog(CartActivity.this);
-                    dialog.setContent("Đã xóa"+ counter+" sản phẩm");
+                    dialog.setContent("Đã xóa "+ counter+" sản phẩm");
                     dialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
                     dialog.show();
                 }
@@ -184,6 +184,7 @@ public class CartActivity extends AppCompatActivity {
             @Override
             public void updateQuantity(ItemCartModel item, int newQuantity) {
                 cartManagerSqLite.updateQuantity(item, newQuantity);
+                setPrice();
             }
 
             @Override
@@ -218,6 +219,7 @@ public class CartActivity extends AppCompatActivity {
     void setDataForRecycleView() {
         foodList = cartManagerSqLite.getAllContacts();
         cartListAdapter.setData(foodList);
+
         if (foodList == null || foodList.size() == 0) {
             noneOfFood.setVisibility(View.VISIBLE);
             foodListRCV.setVisibility(View.GONE);
@@ -250,4 +252,5 @@ public class CartActivity extends AppCompatActivity {
        });
 
     }
+
 }

@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -58,6 +59,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
             holder.discount.setVisibility(View.GONE);
             holder.originalPrice.setVisibility(View.GONE);
         }
+
         float currentPrice = itemCartModel.getPrice() * (1 - (float)itemCartModel.getDiscount() / 100);
         holder.currentPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));
         holder.originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(itemCartModel.getPrice()));

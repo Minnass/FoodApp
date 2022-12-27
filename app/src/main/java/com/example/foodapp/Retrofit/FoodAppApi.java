@@ -87,6 +87,11 @@ import retrofit2.http.POST;
                 @Field("oldPassword") String oldPassword,
                 @Field("newPassword") String newPassword
         );
+        @POST("sendEmail.php")
+        @FormUrlEncoded
+        public Observable<Boolean>getForgotPassword(
+          @Field("email") String email
+        );
 
         @POST ("checkSaleCode.php")
         @FormUrlEncoded
@@ -101,6 +106,7 @@ import retrofit2.http.POST;
         @POST ("getHistoryOrder.php")
         @FormUrlEncoded
         public Observable<List<CartHistoryItemModel>>getHistoryOrders(
+                @Field("userID") int userID,
                 @Field("startDate") String startDate,
                 @Field("endDate") String endDate
         );

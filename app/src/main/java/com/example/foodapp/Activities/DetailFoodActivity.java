@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.foodapp.Adapter.FoodListAdapter;
@@ -186,6 +187,7 @@ public class DetailFoodActivity extends AppCompatActivity {
                 Intent intent = new Intent(DetailFoodActivity.this, PaymentActivity.class);
                 intent.putParcelableArrayListExtra("foodListChosend", _selectedFood);
                 startActivity(intent);
+                bottomSheetDialog.dismiss();
             }
         });
         decrease_dialog.setOnClickListener(new View.OnClickListener() {

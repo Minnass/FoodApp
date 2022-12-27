@@ -203,7 +203,7 @@ public class HomeFragment extends Fragment {
         mRecycleviewChoice = viewGroup.findViewById(R.id.rcv_yourChoice);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
         mRecycleviewChoice.setLayoutManager(gridLayoutManager);
-        GridSpacingItemDecoration itemDecoration = new GridSpacingItemDecoration(2, 40, false);
+        GridSpacingItemDecoration itemDecoration = new GridSpacingItemDecoration(2, 50, false);
         mRecycleviewChoice.addItemDecoration(itemDecoration);
         mFoodListAdapter = new FoodListAdapter(context, mFoodList, new IClickFoodItemListener() {
             @Override

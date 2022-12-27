@@ -55,14 +55,13 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textlayou1_infoAcitivy"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Họ Tên"
                 app:counterEnabled="true"
                 app:counterMaxLength="50"
                 app:endIconMode="clear_text">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name_info"
                     android:layout_width="match_parent"
@@ -73,7 +72,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textlayou2_infoActivity"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                 style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -92,7 +91,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textLayout3_infoActivity"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                 style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Giới tính"
@@ -111,7 +110,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textLayout4_infoActivity"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                 style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Địa chỉ"
@@ -148,7 +147,6 @@
         android:textColor="@color/white"
         android:textSize="20dp" />
     <TextView
-
         android:visibility="gone"
         android:id="@+id/Gotonext"
         android:layout_width="match_parent"

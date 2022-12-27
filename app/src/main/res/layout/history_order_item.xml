@@ -33,7 +33,7 @@
 
             <TextView
                 android:id="@+id/foodName_historyOrder_item"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="Bánh phở "
                 android:textColor="@color/black"

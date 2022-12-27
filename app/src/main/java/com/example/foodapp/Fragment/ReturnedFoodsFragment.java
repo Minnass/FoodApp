@@ -162,6 +162,7 @@ public class ReturnedFoodsFragment extends Fragment {
         WindowManager.LayoutParams windowAttributes = window.getAttributes();
         windowAttributes.gravity = Gravity.RIGHT;
         window.setAttributes(windowAttributes);
+        filterDialog.getWindow().getAttributes().windowAnimations=R.style.dialogSlide;
         filterDialog.setCancelable(true);
         TextView btnFilderDelete = filterDialog.findViewById(R.id.btnFilterDelete);
         TextView btnCloseFilter = filterDialog.findViewById(R.id.btnCloseDialog);
