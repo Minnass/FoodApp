@@ -23,7 +23,19 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.7">
-
+        <TextView
+            android:visibility="gone"
+            android:layout_marginBottom="6dp"
+            android:padding="10dp"
+            android:background="@drawable/bg_orange_textview"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:text="Quyền Admin"
+            android:id="@+id/admin_role"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"/>
         <ImageView
             android:id="@+id/edit_profileFragment"
             android:layout_width="25dp"
@@ -178,6 +190,7 @@
                 android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
 
         </LinearLayout>
+
 
         <TextView
             android:id="@+id/signOut"

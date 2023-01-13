@@ -25,6 +25,7 @@ import com.example.foodapp.Adapter.FoodListAdapter;
 import com.example.foodapp.Adapter.PhotoViewPager2Adapter;
 import com.example.foodapp.Adapter.PopularAdapter;
 import com.example.foodapp.Enum.Categories;
+import com.example.foodapp.Fragment.CartFragment;
 import com.example.foodapp.Fragment.DefaultSearchingFragment;
 import com.example.foodapp.Fragment.FavoriteFragment;
 import com.example.foodapp.Fragment.HomeFragment;
@@ -63,6 +64,7 @@ public class MainHomeActivity extends AppCompatActivity {
     private HomeFragment homeFragment;
     private FavoriteFragment favoriteFragment;
     private ProfileFragment profileFragment;
+    private CartFragment cartFragment;
     private BottomNavigationView mBottomNavigationView;
     private NestedScrollView mNestedScrollView;
 
@@ -75,6 +77,7 @@ public class MainHomeActivity extends AppCompatActivity {
         homeFragment = HomeFragment.newInstance();
         favoriteFragment = FavoriteFragment.newInstance();
         profileFragment = ProfileFragment.newInstance();
+        cartFragment=CartFragment.newInstance();
         ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.frameLayout, homeFragment);
         ft.commit();
@@ -95,7 +98,7 @@ public class MainHomeActivity extends AppCompatActivity {
                     }
                     case R.id.cart_nvg: {
                         ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.frameLayout, homeFragment);
+                        ft.replace(R.id.frameLayout,cartFragment);
                         ft.commit();
                         break;
                     }

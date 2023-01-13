@@ -54,8 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText userName, passWord;
     TextInputLayout userNameLayout, passWordLayout;
     TextView LoginButton, forgotPassword, signUpButton;
-    LinearLayout google, gmail;
-
+    LinearLayout google;
 
     FoodAppApi mFoodappApi= RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
     CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -86,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword = findViewById(R.id.forgotPassword);
         signUpButton = findViewById(R.id.signuo_LoginActivity);
         google = findViewById(R.id.Google);
-        gmail = findViewById(R.id.gmail);
     }
 
     void handleForgotPassword()
@@ -154,12 +152,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (userName.getText().toString().equals("")) {
                     userNameLayout.setHelperTextEnabled(true);
                     userNameLayout.setHelperText("Required*");
-                    userNameLayout.setBoxBackgroundColor(Color.RED);
                     return;
                 }
                 if (passWord.getText().toString().equals("")) {
                     passWordLayout.setHelperText("Required*");
-                    passWordLayout.setBoxBackgroundColor(Color.RED);
                     passWordLayout.setHelperTextEnabled(true);
 
                     return;
@@ -208,8 +204,12 @@ public class LoginActivity extends AppCompatActivity {
                                 bundle.putSerializable("user", object.getUser());
                                 intent.putExtras(bundle);
                                 startActivity(intent);
+                                finish();
                             } else {
-                              passWord.setText("");
+                             NotificationDialog notificationDialog=new NotificationDialog(LoginActivity.this);
+                             notificationDialog.setContent("Tài khoản hoặc mật khẩu không đúng,");
+                             notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_warning_24);
+                             notificationDialog.show();
                             }
                         },
                         error -> {
@@ -230,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             task.getResult(ApiException.class);
                         } catch (ApiException e) {
-                            Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                            Log.d("Err",e.getMessage());
                         }
                             handleResultFromGoolgeApiLogin(task);
                     }
@@ -251,21 +251,21 @@ public class LoginActivity extends AppCompatActivity {
         task.addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
             @Override
             public void onSuccess(GoogleSignInAccount googleSignInAccount) {
-                compositeDisposable.add(mFoodappApi.registerAccount("google","","",googleSignInAccount.getEmail())
+                compositeDisposable.add(mFoodappApi.checkExistEmail(googleSignInAccount.getEmail())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                object -> {
-                                    if (object.isSuccess()) {
-                                        //dang ki tk ms
-                                        Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
-                                        startActivity(intent);
-                                        finish();
+                                success -> {
+                                    if (success) {
+                                        loginWithGoogle(googleSignInAccount.getEmail());
                                     } else {
-                                        //navigate main
-                                        Intent intent=new Intent(LoginActivity.this,MainHomeActivity.class);
-                                        startActivity(intent);
-                                        finish();
+                                       Intent intent=new Intent(LoginActivity.this,InformationRegisterActivity.class);
+                                       Bundle bundle=new Bundle();
+                                       bundle.putString("type","google");
+                                       bundle.putString("email",googleSignInAccount.getEmail());
+                                       intent.putExtras(bundle);
+                                       startActivity(intent);
+                                       finish();
                                     }
                                 },
                                 error -> {
@@ -273,9 +273,6 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                         )
                 );
-                //check Email
-
-                //Info activity
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -283,5 +280,28 @@ public class LoginActivity extends AppCompatActivity {
                Log.d("Loi",e.getMessage());
             }
         });
+    }
+
+    void loginWithGoogle(String email)
+    {
+        compositeDisposable.add(mFoodappApi.loginWithGoogle(email)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        object -> {
+                            if (object.isSuccess()) {
+                                Intent intent = new Intent(LoginActivity.this, MainHomeActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("user", object.getUser());
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                finish();
+                            }
+                        },
+                        error -> {
+                            Log.d("Loi", error.getMessage());
+                        }
+                )
+        );
     }
 }

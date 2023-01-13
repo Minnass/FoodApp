@@ -16,6 +16,7 @@ import com.example.foodapp.Iterface.IClickFavoriteListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 
@@ -56,7 +57,13 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.PopularV
             holder.discount.setVisibility(View.GONE);
             holder.originalFee.setVisibility(View.GONE);
         }
-        Glide.with(context).load(foodModel.getImage()).into(holder.pic);
+
+        if (foodModel.getImage().contains("http")) {
+            Glide.with(context).load(foodModel.getImage()).into(holder.pic);
+        } else {
+            String path= InternetConnection.BASE_URL+"images/"+foodModel.getImage();
+            Glide.with(context).load(path).into(holder.pic);
+        }
         holder.originalFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(foodModel.getPrice()));
         float currentPrice = foodModel.getPrice() * (1 - (float) foodModel.getDiscount() / 100);
         holder.currentFee.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));

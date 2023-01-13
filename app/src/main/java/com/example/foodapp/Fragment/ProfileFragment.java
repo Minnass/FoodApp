@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.foodapp.Activities.AddressActivity;
+import com.example.foodapp.Activities.Admin;
 import com.example.foodapp.Activities.CartActivity;
 import com.example.foodapp.Activities.CartHistoryActivity;
 import com.example.foodapp.Activities.ContactInformationActivity;
@@ -22,6 +24,13 @@ import com.example.foodapp.Activities.MainHomeActivity;
 import com.example.foodapp.Activities.SplashScreenActivity;
 import com.example.foodapp.Model.CartHistoryItemModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.MySharedPerferences;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +45,7 @@ public class ProfileFragment extends Fragment {
 
     ImageView profileEditer, userImage;
     LinearLayout yourCart, yourAddress, cartHistory, supportCenter;
-    TextView signOut;
+    TextView signOut, admin;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -66,7 +75,9 @@ public class ProfileFragment extends Fragment {
 
         LinearLayout view_layout_returnedFood = (LinearLayout) inflater.inflate(R.layout.fragment_profile, null);
         mappingID(view_layout_returnedFood);
+        upLoadAvatar();
         hanldeClickEvent();
+        handleAdminArea();
         return view_layout_returnedFood;
     }
 
@@ -78,15 +89,46 @@ public class ProfileFragment extends Fragment {
         cartHistory = viewGroup.findViewById(R.id.cartHistory_profileFragment);
         supportCenter = viewGroup.findViewById(R.id.support_profileFragment);
         signOut = viewGroup.findViewById(R.id.signOut);
+        admin = viewGroup.findViewById(R.id.admin_role);
+    }
+
+    void upLoadAvatar() {
+        MySharedPerferences.getAvatar(userImage, context);
+    }
+
+    void handleAdminArea() {
+        if (MainHomeActivity.user.getRole().equals("admin")) {
+            admin.setVisibility(View.VISIBLE);
+        }
+        admin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, Admin.class);
+                startActivity(intent);
+            }
+        });
     }
 
     void hanldeClickEvent() {
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, SplashScreenActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Will clear out your activity history stack till now
-                startActivity(intent);
+                if (MainHomeActivity.user.getLoginType().equals("google")) {
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+                    GoogleSignInClient gsc = GoogleSignIn.getClient(context, gso);
+                    gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Intent intent = new Intent(context, SplashScreenActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Will clear out your activity history stack till now
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    Intent intent = new Intent(context, SplashScreenActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Will clear out your activity history stack till now
+                    startActivity(intent);
+                }
             }
         });
         profileEditer.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +149,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, AddressActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putString("type","view");
+                Bundle bundle = new Bundle();
+                bundle.putString("type", "view");
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -116,8 +158,8 @@ public class ProfileFragment extends Fragment {
         cartHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               Intent intent=new Intent(context, CartHistoryActivity.class);
-               startActivity(intent);
+                Intent intent = new Intent(context, CartHistoryActivity.class);
+                startActivity(intent);
             }
         });
         supportCenter.setOnClickListener(new View.OnClickListener() {
@@ -127,5 +169,11 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        upLoadAvatar();
     }
 }

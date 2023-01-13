@@ -67,6 +67,7 @@
                 android:id="@+id/userName_RegisterActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:background="@color/white"
 
                 android:maxLength="31" />

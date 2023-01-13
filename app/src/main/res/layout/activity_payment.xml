@@ -348,6 +348,7 @@
                             android:layout_marginTop="20dp">
 
                             <EditText
+                                android:textSize="14dp"
                                 android:id="@+id/saleCode_paymentActivity"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

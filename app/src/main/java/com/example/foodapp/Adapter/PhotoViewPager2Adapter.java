@@ -1,5 +1,6 @@
 package com.example.foodapp.Adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,16 +9,27 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodapp.Model.Photo;
+import com.bumptech.glide.Glide;
+import com.example.foodapp.Model.FoodModel;
+import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
 
 
 import java.util.List;
 
 public class PhotoViewPager2Adapter extends RecyclerView.Adapter<PhotoViewPager2Adapter.PhotoViewHolder> {
-    private List<Photo> mListPhoto;
-    public PhotoViewPager2Adapter(List<Photo> mListPhoto) {
+    private List<String> mListPhoto;
+    Context context;
+
+    public PhotoViewPager2Adapter(List<String> mListPhoto, Context context) {
         this.mListPhoto = mListPhoto;
+        this.context = context;
+    }
+
+    public  void setData(List<String> list)
+    {
+        this.mListPhoto=list;
+        notifyDataSetChanged();
     }
     @NonNull
     @Override
@@ -27,11 +39,11 @@ public class PhotoViewPager2Adapter extends RecyclerView.Adapter<PhotoViewPager2
     }
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
-        Photo photo=mListPhoto.get(position);
+        String photo=mListPhoto.get(position);
         if(photo==null){
             return;
         }
-        holder.imgView.setImageResource(photo.getResource_id());
+        Glide.with(context).load(photo).into(holder.imgView);
 
     }
     @Override

@@ -54,7 +54,7 @@
             android:layout_width="100dp"
             android:layout_height="90dp"
             android:scaleType="fitXY"
-            android:src="@drawable/anh01" />
+          />
 
         <TextView
             android:id="@+id/foodName_updateSheet"

@@ -18,6 +18,7 @@ import com.example.foodapp.Activities.CartActivity;
 import com.example.foodapp.Iterface.SQliteInterface.ISqliteLisener;
 import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 import java.util.List;
@@ -52,47 +53,45 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
         if (itemCartModel == null) {
             return;
         }
-        Glide.with(context).load(itemCartModel.getImage()).into(holder.foodImg);
+        if (itemCartModel.getImage().contains("http")) {
+            Glide.with(context).load(itemCartModel.getImage()).into(holder.foodImg);
+        } else {
+            String path= InternetConnection.BASE_URL+"images/"+itemCartModel.getImage();
+            Glide.with(context).load(path).into(holder.foodImg);
+        }
         holder.foodName.setText(itemCartModel.getFoodName());
-        if(itemCartModel.getDiscount()==0)
-        {
+        if (itemCartModel.getDiscount() == 0) {
             holder.discount.setVisibility(View.GONE);
             holder.originalPrice.setVisibility(View.GONE);
         }
 
-        float currentPrice = itemCartModel.getPrice() * (1 - (float)itemCartModel.getDiscount() / 100);
+        float currentPrice = itemCartModel.getPrice() * (1 - (float) itemCartModel.getDiscount() / 100);
         holder.currentPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(currentPrice));
         holder.originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(itemCartModel.getPrice()));
-        holder.discount.setText("Giảm "+String.valueOf(itemCartModel.getDiscount())+"%");
+        holder.discount.setText("Giảm " + String.valueOf(itemCartModel.getDiscount()) + "%");
         holder.quantity.setText(String.valueOf(itemCartModel.getQuantity()));
         holder.increase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int current=itemCartModel.getQuantity();
-                int next=current+1;
+                int current = itemCartModel.getQuantity();
+                int next = current + 1;
                 itemCartModel.setQuantity(next);
                 holder.quantity.setText(String.valueOf(next));
-               mILisener.updateQuantity(itemCartModel,next);
+                mILisener.updateQuantity(itemCartModel, next);
             }
         });
-        if(itemCartModel.isSelected())
-        {
+        if (itemCartModel.isSelected()) {
             holder.selection.setChecked(true);
-        }
-        else
-        {
+        } else {
             holder.selection.setChecked(false);
         }
         holder.selection.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                {
+                if (isChecked) {
                     itemCartModel.setSelected(true);
                     mILisener.selectedItem(holder.getAdapterPosition());
-                }
-                else
-                {
+                } else {
                     itemCartModel.setSelected(false);
                     mILisener.selectedItem(holder.getAdapterPosition());
                 }
@@ -102,15 +101,14 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
         holder.decrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int current=itemCartModel.getQuantity();
-                if(current==1)
-                {
+                int current = itemCartModel.getQuantity();
+                if (current == 1) {
                     return;
                 }
-                int previous=current-1;
+                int previous = current - 1;
                 itemCartModel.setQuantity(previous);
                 holder.quantity.setText(String.valueOf(previous));
-                mILisener.updateQuantity(itemCartModel,previous);
+                mILisener.updateQuantity(itemCartModel, previous);
             }
         });
     }
@@ -129,6 +127,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
         ImageView decrease, increase;
         TextView discount;
         CheckBox selection;
+
         public CartListViewHolder(@NonNull View itemView) {
             super(itemView);
             foodImg = itemView.findViewById(R.id.foodimgCartItem);
@@ -139,7 +138,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.CartLi
             decrease = itemView.findViewById(R.id.decrease);
             increase = itemView.findViewById(R.id.increase);
             discount = itemView.findViewById(R.id.discount_text_ItemCartActivity);
-            selection=itemView.findViewById(R.id.selected_CartIem);
+            selection = itemView.findViewById(R.id.selected_CartIem);
         }
     }
 }

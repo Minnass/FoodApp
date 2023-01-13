@@ -18,6 +18,7 @@ import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.Model.SQLiteModel.ItemCartModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 import java.util.List;
@@ -51,7 +52,12 @@ public class HistoryOrderAdapter extends RecyclerView.Adapter<HistoryOrderAdapte
             return;
         }
 
-        Glide.with(context).load(item.getImage()).into(holder.foodImg);
+        if (item.getImage().contains("http")) {
+            Glide.with(context).load(item.getImage()).into(holder.foodImg);
+        } else {
+            String path= InternetConnection.BASE_URL+"images/"+item.getImage();
+            Glide.with(context).load(path).into(holder.foodImg);
+        }
         holder.foodName.setText((item.getFoodName()));
         float currentPrice = item.getPrice() * (1 - (float) item.getDiscount() / 100);
         float _totalPrice=currentPrice*item.getQuantity();

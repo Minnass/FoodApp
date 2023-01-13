@@ -16,6 +16,7 @@ import com.example.foodapp.Iterface.IClickAddItemListener;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 import java.util.List;
@@ -51,7 +52,13 @@ public class SearchedItemAdapter extends RecyclerView.Adapter<SearchedItemAdapte
         if (food == null) {
             return;
         }
-        Glide.with(context).load(food.getImage()).into(holder.foodImage);
+
+        if (food.getImage().contains("http")) {
+            Glide.with(context).load(food.getImage()).into(holder.foodImage);
+        } else {
+            String path= InternetConnection.BASE_URL+"images/"+food.getImage();
+            Glide.with(context).load(path).into(holder.foodImage);
+        }
         holder.EatingNumber.setText(String.valueOf(food.getEaterNumber())+" người");
         holder.foodName.setText(food.getName().toString());
         holder.quantitySold.setText(String.valueOf(food.getQuantity()));

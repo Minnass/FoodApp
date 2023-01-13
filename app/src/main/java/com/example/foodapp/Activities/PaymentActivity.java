@@ -286,8 +286,12 @@ public class PaymentActivity extends AppCompatActivity {
         quantity_sheet.setText(String.valueOf(item.getQuantity()));
         float _totalPrice = cacheItem.getPrice() * cacheItem.getQuantity();
         totalPrice_sheet.setText(VietNameseCurrencyFormat.getVietNameseCurrency(_totalPrice));
-        Glide.with(PaymentActivity.this).load(item.getImage()).into(foodImg);
-
+        if (item.getImage().contains("http")) {
+            Glide.with(PaymentActivity.this).load(item.getImage()).into(foodImg);
+        } else {
+            String path= InternetConnection.BASE_URL+"images/"+item.getImage();
+            Glide.with(this).load(path).into(foodImg);
+        }
         Back_sheetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -573,6 +577,8 @@ public class PaymentActivity extends AppCompatActivity {
                                     notificationDialog.setContent("Đặt hàng thành công");
                                     notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
                                     notificationDialog.show();
+                                    orderBtn.setEnabled(false);
+                                    orderBtn.setBackgroundColor(Color.LTGRAY);
                                 }
                             }
                         },

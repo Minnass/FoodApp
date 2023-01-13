@@ -172,7 +172,13 @@ public class DetailFoodActivity extends AppCompatActivity {
         ImageView increase_dialog = view.findViewById(R.id.increase_buyNow);
         TextView quantity_dialog = view.findViewById(R.id.quantityItemCart_buyNow);
         TextView buyNowBtn_dialog = view.findViewById(R.id.btnBuyNow_buyNow);
-        Glide.with(this).load(itemCartModel.getImage()).into(foodImage);
+
+        if (itemCartModel.getImage().contains("http")) {
+            Glide.with(this).load(itemCartModel.getImage()).into(foodImage);
+        } else {
+            String path= InternetConnection.BASE_URL+"images/"+itemCartModel.getImage();
+            Glide.with(this).load(path).into(foodImage);
+        }
         foodName_dialog.setText(itemCartModel.getFoodName());
         originalPrice_dialog.setText(VietNameseCurrencyFormat.getVietNameseCurrency(itemCartModel.getPrice()));
         float currentPrice = itemCartModel.getPrice() * (1 - (float) itemCartModel.getDiscount() / 100);
@@ -228,7 +234,13 @@ public class DetailFoodActivity extends AppCompatActivity {
         originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(Float.parseFloat(bundle.getString("originalprice"))));
         quantitySold.setText(String.valueOf(bundle.getInt("quantitySold")));
         sale.setText("Giảm " + String.valueOf(bundle.getInt("sale")) + "%");
-        Glide.with(getApplicationContext()).load(bundle.getString("image")).into(foodImg);
+        if (bundle.getString("image").contains("http")) {
+            Glide.with(getApplicationContext()).load(bundle.getString("image")).into(foodImg);
+        } else {
+            String path= InternetConnection.BASE_URL+"images/"+bundle.getString("image");
+            Glide.with(this).load(path).into(foodImg);
+        }
+
         itemCartModel = new ItemCartModel(
                 bundle.getString("foodname"),
                 1, (int) Float.parseFloat(bundle.getString("originalprice"))

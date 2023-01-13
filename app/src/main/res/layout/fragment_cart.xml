@@ -22,8 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginLeft="10dp"
-            android:text="Giỏ hàng của tôi"
 
+            android:text="Giỏ hàng của tôi"
             android:textColor="@color/black"
             android:textSize="18dp"
             android:textStyle="bold" />
@@ -155,7 +155,6 @@
                 android:id="@+id/buyItembtn_cartFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:background="#F44336"
                 android:gravity="center">
 

@@ -43,9 +43,9 @@
             android:id="@+id/avatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:civ_circle_background_color="@color/white"
             android:layout_alignParentRight="true"
-            android:src="@drawable/profile_nvg" />
+            android:src="@drawable/profile_nvg"
+            app:civ_circle_background_color="@color/white" />
 
         <EditText
             android:layout_marginTop="5dp"

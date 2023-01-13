@@ -18,6 +18,7 @@ import com.example.foodapp.Activities.DetailFoodActivity;
 import com.example.foodapp.Iterface.IClickFoodItemListener;
 import com.example.foodapp.Model.FoodModel;
 import com.example.foodapp.R;
+import com.example.foodapp.Util.InternetConnection;
 import com.example.foodapp.Util.VietNameseCurrencyFormat;
 
 import java.util.List;
@@ -56,7 +57,13 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.FoodVi
             holder.discount_rate.setVisibility(View.GONE);
             holder.originalPrice.setVisibility(View.GONE);
         }
-        Glide.with(context).load(foodModel.getImage()).into(holder.imgFood);
+
+        if (foodModel.getImage().contains("http")) {
+            Glide.with(context).load(foodModel.getImage()).into(holder.imgFood);
+        } else {
+            String path= InternetConnection.BASE_URL+"images/"+foodModel.getImage();
+            Glide.with(context).load(path).into(holder.imgFood);
+        }
         holder.discount_rate.setText("Giảm "+foodModel.getDiscount() + "%");
         holder.foodName.setText((foodModel.getName()));
         holder.originalPrice.setText(VietNameseCurrencyFormat.getVietNameseCurrency(foodModel.getPrice()));

@@ -21,8 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/anh01" />
+                android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/discount_text"
@@ -53,7 +52,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="28dp"
+        android:layout_height="35dp"
         android:orientation="vertical">
 
         <TextView

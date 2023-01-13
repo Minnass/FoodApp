@@ -14,8 +14,9 @@ public class UserModel implements Serializable {
     private  String email;
     private int userID;
     private String loginType;
+    private  String role;
 
-    public UserModel(String name, String dateOfBirth, String sex, String address, String email, int userID, String loginType) {
+    public UserModel(String name, String dateOfBirth, String sex, String address, String email, int userID, String loginType, String role) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.sex = sex;
@@ -23,6 +24,15 @@ public class UserModel implements Serializable {
         this.email = email;
         this.userID = userID;
         this.loginType = loginType;
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public int getUserID() {

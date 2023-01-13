@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ import com.example.foodapp.Retrofit.RetrofitClient;
 import com.example.foodapp.SQLite.FavoriteFoodManagerSqLite;
 import com.example.foodapp.Util.GridSpacingItemDecoration;
 import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.MySharedPerferences;
 import com.example.foodapp.Util.NotificationDialog;
 import com.example.foodapp.Util.TranslateAnimationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -73,8 +75,10 @@ public class HomeFragment extends Fragment {
     private RecyclerView mRecycleviewChoice;
     private FoodListAdapter mFoodListAdapter;
     private List<FoodModel> mFoodList;
+    PhotoViewPager2Adapter photoViewPager2Adapter;
+    ImageView avatar;
 
-    private List<Photo> mPhotoList;
+    private List<String> mPhotoList;
 
     private Handler mHandler;
     private Runnable mRunnable;
@@ -115,11 +119,15 @@ public class HomeFragment extends Fragment {
         mFoodAppApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
         userName=view_layout_returnedFood.findViewById(R.id.name);
         userName.setText(MainHomeActivity.user.getName());
-        initImageSlider(view_layout_returnedFood);
+        avatar=view_layout_returnedFood.findViewById(R.id.avatar);
+        upLoadAvatar();
+
         initCategory(view_layout_returnedFood);
         initPolularFood(view_layout_returnedFood);
         initYourchoice(view_layout_returnedFood);
         initSearchingFood(view_layout_returnedFood);
+        initImageSlider(view_layout_returnedFood);
+
         return view_layout_returnedFood;
     }
 
@@ -148,11 +156,11 @@ public class HomeFragment extends Fragment {
     void initImageSlider(LinearLayout viewGroup) {
         mViewpager2 = viewGroup.findViewById(R.id.view_paper2);
         mCircleIndicator3 = viewGroup.findViewById(R.id.circle_indicator3);
-        mPhotoList = new ArrayList<Photo>();
-        mPhotoList.add(new Photo(R.drawable.anh01));
-        mPhotoList.add(new Photo(R.drawable.anh02));
-        mPhotoList.add(new Photo(R.drawable.anh03));
-        PhotoViewPager2Adapter photoViewPager2Adapter = new PhotoViewPager2Adapter(mPhotoList);
+        mPhotoList = new ArrayList<String>();
+        mPhotoList.add("https://cdn.tgdd.vn/Files/2021/08/24/1377372/20-mon-an-vat-hot-nhat-hien-nay-ma-ban-khong-nen-bo-qua-du-chi-1-mon-202108240918237786.jpg");
+        mPhotoList.add("https://static1.bestie.vn/Mlog/ImageContent/201910/trua-nay-an-gi-da-co-danh-sach-15-mon-ngon-phu-hop-cho-ngay-ban-ron-c1fce0.jpg");
+        mPhotoList.add("https://nhahangdalat.info/wp-content/uploads/2020/09/dui-cuu-dut-lo-nuong-than-hong-nha-hang-memory-nhahangdalat.info-06-600x450.jpg");
+        photoViewPager2Adapter = new PhotoViewPager2Adapter(mPhotoList,context);
         mViewpager2.setAdapter(photoViewPager2Adapter);
         mCircleIndicator3.setViewPager(mViewpager2);
         mViewpager2.setPageTransformer(new CompositePageTransformer());
@@ -203,7 +211,7 @@ public class HomeFragment extends Fragment {
         mRecycleviewChoice = viewGroup.findViewById(R.id.rcv_yourChoice);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 2);
         mRecycleviewChoice.setLayoutManager(gridLayoutManager);
-        GridSpacingItemDecoration itemDecoration = new GridSpacingItemDecoration(2, 50, false);
+        GridSpacingItemDecoration itemDecoration = new GridSpacingItemDecoration(2, 30, false);
         mRecycleviewChoice.addItemDecoration(itemDecoration);
         mFoodListAdapter = new FoodListAdapter(context, mFoodList, new IClickFoodItemListener() {
             @Override
@@ -226,6 +234,7 @@ public class HomeFragment extends Fragment {
         getAllFood();
     }
 
+
     void getAllFood() {
         compositeDisposable.add(mFoodAppApi.getAllFood()
                 .subscribeOn(Schedulers.io())
@@ -234,6 +243,7 @@ public class HomeFragment extends Fragment {
                         allFood -> {
                             if (allFood.size() > 0) {
                                 mFoodListAdapter.setData(allFood);
+
                             }
                         },
                         error ->
@@ -297,15 +307,23 @@ public class HomeFragment extends Fragment {
         );
     }
 
+    void upLoadAvatar()
+    {
+        MySharedPerferences.getAvatar(avatar,context);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
         mHandler.removeCallbacks(mRunnable);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
+        upLoadAvatar();
+        getAllFood();
         mHandler.postDelayed(mRunnable, 5000);
     }
 }

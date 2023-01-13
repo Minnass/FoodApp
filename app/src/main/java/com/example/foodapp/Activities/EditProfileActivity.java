@@ -9,11 +9,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,18 +29,24 @@ import com.example.foodapp.R;
 import com.example.foodapp.Retrofit.FoodAppApi;
 import com.example.foodapp.Retrofit.RetrofitClient;
 import com.example.foodapp.Util.InternetConnection;
+import com.example.foodapp.Util.MySharedPerferences;
 import com.example.foodapp.Util.NotificationDialog;
 import com.example.foodapp.Util.PermissionAlertDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class EditProfileActivity extends AppCompatActivity {
-    Boolean isSaving=false;
+
     private final int CAMERA_PEMISSION = 1;
     ImageView backBtn;
     ImageView avatar;
@@ -59,16 +68,16 @@ public class EditProfileActivity extends AppCompatActivity {
         initView();
         handleSavingButton();
         handleSelectImageOption();
-        galleryLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), result ->{
+        galleryLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
             avatar.setImageURI(result);
-            isSaving=true;
+
         });
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 Bundle bundle = result.getData().getExtras();
                 Bitmap bitmap = (Bitmap) bundle.get("data");
                 avatar.setImageBitmap(bitmap);
-                isSaving=true;
+
             }
         });
     }
@@ -89,7 +98,8 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     void initView() {
-        email.setText("Emai: " + MainHomeActivity.user.getEmail());
+        email.setText("Email: " + MainHomeActivity.user.getEmail());
+        MySharedPerferences.getAvatar(avatar,this);
         if (MainHomeActivity.user.getLoginType().equals("google")) {
             oldPasswordLayout.setEnabled(false);
             newPasswordLayout.setEnabled(false);
@@ -109,7 +119,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 error.setVisibility(View.GONE);
-                if (checkValidTyping()||isSaving) {
+                if (checkValidTyping()) {
                     compositeDisposable.add(mFoodAppApi.ChangingPassword(
                                     MainHomeActivity.user.getEmail()
                                     , oldPassword.getText().toString(),
@@ -136,6 +146,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             )
                     );
                 }
+                saveAvatarChanged();
             }
         });
     }
@@ -200,6 +211,30 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    void saveAvatarChanged()
+    {
+        MySharedPerferences.deleteBefore(EditProfileActivity.this);
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("avatarPath", Context.MODE_PRIVATE);
+        File mypath = new File(directory, "avatar.jpg");
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(mypath);
+            Bitmap bitmap = ((BitmapDrawable) avatar.getDrawable()).getBitmap();
+            bitmap.compress(Bitmap.CompressFormat.WEBP, 75, out);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            assert out != null;
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        MySharedPerferences.setValue(EditProfileActivity.this, "imagePath", directory.getAbsolutePath());
+        MySharedPerferences.setSavedBefore(EditProfileActivity.this);
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     void checkPermission() {
@@ -228,7 +263,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                 } else {
                     if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                        PermissionAlertDialog.requestPermissionAgain(EditProfileActivity.this,new String[]{Manifest.permission.CAMERA},CAMERA_PEMISSION);
+                        PermissionAlertDialog.requestPermissionAgain(EditProfileActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PEMISSION);
                     } else {
                         PermissionAlertDialog.showAlerDialogWarning(EditProfileActivity.this);
                     }

@@ -23,7 +23,7 @@
                android:layout_width="90dp"
                android:layout_height="70dp"
                android:scaleType="fitXY"
-               android:src="@drawable/anh01" />
+               />
        </androidx.cardview.widget.CardView>
 
        <RelativeLayout

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.FoodListAdminActivity">
+    <LinearLayout
+        android:id="@+id/lnLayout"
+        android:padding="10dp"
+        android:gravity="center_vertical"
+        android:background="#FF0537"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+        <ImageView
+            android:id="@+id/back_foodListAdmin"
+            android:layout_marginRight="15dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_baseline_arrow_back_ios_new_24"/>
+
+        <EditText
+            android:padding="5dp"
+            android:id="@+id/searchFood_foodListAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_search"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:textSize="15dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/foodListRCV_admin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/lnLayout" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_baseline_add_circle_24"
+        app:backgroundTint="#E38E10" />
+</RelativeLayout>

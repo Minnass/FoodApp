@@ -37,14 +37,16 @@ public class InformationRegisterActivity extends AppCompatActivity {
 
     FoodAppApi mFoodappApi = RetrofitClient.getInstance(InternetConnection.BASE_URL).create(FoodAppApi.class);
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+    String type;
+    String userName, passWord, email;
 
-    String userName,passWord,email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information_register);
 
         mappingID();
+        getDataFromIntent();
         handleSubmitButton();
         chooseCalendar();
         backRegister.setOnClickListener(new View.OnClickListener() {
@@ -54,14 +56,16 @@ public class InformationRegisterActivity extends AppCompatActivity {
             }
         });
     }
-    void getDataFromIntent()
-    {
-        Bundle bundle=new Bundle();
-        bundle=getIntent().getExtras();
+
+    void getDataFromIntent() {
+        Bundle bundle = new Bundle();
+        bundle = getIntent().getExtras();
+        email = bundle.getString("email");
         userName=bundle.getString("userName");
         passWord=bundle.getString("passWord");
-        email=bundle.getString("email");
+        type=bundle.getString("type","normal");
     }
+
     void mappingID() {
         backRegister = findViewById(R.id.back_infoActivity);
         nameLayout = findViewById(R.id.textlayou1_infoAcitivy);
@@ -105,7 +109,7 @@ public class InformationRegisterActivity extends AppCompatActivity {
                 if (!checkValidInput()) {
                     return;
                 }
-                sendPersonalInfoToServer(email,name.getText().toString(), dateOfbirth.getText().toString(),
+                sendPersonalInfoToServer(email, name.getText().toString(), dateOfbirth.getText().toString(),
                         sex.getText().toString(), address.getText().toString()
                 );
 
@@ -117,37 +121,31 @@ public class InformationRegisterActivity extends AppCompatActivity {
         if (name.getText().toString().equals("")) {
             nameLayout.setHelperTextEnabled(true);
             nameLayout.setHelperText("Required*");
-            nameLayout.setBoxBackgroundColor(Color.RED);
             return false;
         }
         if (dateOfbirth.getText().toString().equals("")) {
             dateLayout.setHelperTextEnabled(true);
             dateLayout.setHelperText("Required*");
-            dateLayout.setBoxBackgroundColor(Color.RED);
+
             return false;
         }
         if (sex.getText().toString().equals("")) {
             sexLayout.setHelperTextEnabled(true);
             sexLayout.setHelperText("Required*");
-            sexLayout.setBoxBackgroundColor(Color.RED);
+
             return false;
         }
         if (address.getText().toString().equals("")) {
             addressLayout.setHelperTextEnabled(true);
             addressLayout.setHelperText("Required*");
-            addressLayout.setBoxBackgroundColor(Color.RED);
+
             return false;
         }
         return true;
     }
 
-    void sendPersonalInfoToServer(String email,String name, String dateOfBirth, String sex, String address) {
-        Log.d("lloi",email);
-        Log.d("lloi",name);
-        Log.d("lloi",dateOfBirth);
-        Log.d("lloi",sex);
-        Log.d("lloi",address);
-        compositeDisposable.add(mFoodappApi.sendPersonalInfo(email,name, dateOfBirth, sex, address)
+    void sendPersonalInfoToServer(String email, String name, String dateOfBirth, String sex, String address) {
+        compositeDisposable.add(mFoodappApi.sendPersonalInfo(email, name, dateOfBirth, sex, address)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -155,15 +153,21 @@ public class InformationRegisterActivity extends AppCompatActivity {
                             if (object) {
                                 submitBtn.setVisibility(View.GONE);
                                 goTonextBtn.setVisibility(View.VISIBLE);
-                                NotificationDialog notificationDialog=new NotificationDialog(InformationRegisterActivity.this);
+                                NotificationDialog notificationDialog = new NotificationDialog(InformationRegisterActivity.this);
                                 notificationDialog.setContent("Đăng kí tài khoản thành công");
                                 notificationDialog.setDialogTypeResource(R.drawable.ic_baseline_check_circle_24);
                                 notificationDialog.show();
                                 goTonextBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-
-                                        login();
+                                        if(type.equals("google"))
+                                        {
+                                            loginWithGoogle(email);
+                                        }
+                                        else
+                                        {
+                                            login();
+                                        }
                                     }
                                 });
                             }
@@ -177,15 +181,15 @@ public class InformationRegisterActivity extends AppCompatActivity {
 
     void navigatateMainActivity(UserModel user) {
         Intent intent = new Intent(InformationRegisterActivity.this, MainHomeActivity.class);
-        Bundle bundle=new Bundle();
-        bundle.putSerializable("user",user);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("user", user);
         intent.putExtras(bundle);
         startActivity(intent);
         finish();
     }
-    void login()
-    {
-        compositeDisposable.add(mFoodappApi.checkLogin(userName,passWord)
+
+    void login() {
+        compositeDisposable.add(mFoodappApi.checkLogin(userName, passWord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -197,6 +201,28 @@ public class InformationRegisterActivity extends AppCompatActivity {
                                         navigatateMainActivity(object.getUser());
                                     }
                                 });
+                            }
+                        },
+                        error -> {
+                            Log.d("Loi", error.getMessage());
+                        }
+                )
+        );
+    }
+
+    void loginWithGoogle(String email) {
+        compositeDisposable.add(mFoodappApi.loginWithGoogle(email)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        object -> {
+                            if (object.isSuccess()) {
+                                Intent intent = new Intent(InformationRegisterActivity.this, MainHomeActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("user", object.getUser());
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                finish();
                             }
                         },
                         error -> {

@@ -124,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 bundle.putString("email",email.getText().toString());
                                 bundle.putString("userName",userName.getText().toString());
                                 bundle.putString("passWord",password.getText().toString());
+                                intent.putExtras(bundle);
                                 startActivity(intent);
                             } else {
                                 error.setText(object.getMessage());

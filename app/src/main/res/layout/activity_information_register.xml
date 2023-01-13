@@ -61,41 +61,43 @@
                 android:hint="Họ Tên"
                 app:counterEnabled="true"
                 app:counterMaxLength="50"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:helperTextTextColor="#f12121">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    />
+                    android:maxLength="51" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textlayou2_infoActivity"
-                 style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
+                style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:hint="Ngày sinh"
-                app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_baseline_calendar_month_24"
-                >
+                app:endIconMode="custom"
+                app:helperTextTextColor="#f12121">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/dateOfbirth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-             />
+                    android:background="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textLayout3_infoActivity"
-                 style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
+                style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Giới tính"
                 app:counterEnabled="true"
+                app:helperTextTextColor="#f12121"
                 app:counterMaxLength="50"
                 app:endIconCheckable="true"
                 app:endIconMode="clear_text">
@@ -110,11 +112,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textLayout4_infoActivity"
-                 style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
+                style="@style/ThemeOverlay.Material3.MaterialTimePicker.Display.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Địa chỉ"
                 app:counterEnabled="true"
+                app:helperTextTextColor="#f12121"
                 app:counterMaxLength="50"
                 app:endIconCheckable="true"
                 app:endIconMode="clear_text">
