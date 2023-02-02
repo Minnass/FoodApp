@@ -1,4 +1,4 @@
-# FoodApp
+
 # Food Delivery App
 ## Introduction
 This is a project completed through a subject `Software technology introduction` in the first semester of the third year of university.
